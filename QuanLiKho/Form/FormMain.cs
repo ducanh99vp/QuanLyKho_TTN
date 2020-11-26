@@ -99,6 +99,38 @@ namespace QuanLiKho
 
             dateEditNK.Text = DateTime.Today.ToString();
         }
+        private void comboBoxEditTenNK_EditValueChanged(object sender, EventArgs e)
+        {
+            DataTable temp = new DataTable();
+            if (comboBoxEditTenNK.Text != "")
+            {
+                try
+                {
+                    string cmd = "SELECT * FROM tblNPP WHERE NPPTen Like N'" + comboBoxEditTenNK.Text + "'";
+                    temp = con.GetDataTable(cmd);
+
+                    txtDiaChiNK.Text = temp.Rows[0][2].ToString();
+                    txtMSTNK.Text = temp.Rows[0][3].ToString();
+                    txtDienThoaiNK.Text = temp.Rows[0][4].ToString();
+                    txtGhiChuXK.Text = temp.Rows[0][5].ToString();
+                    txtMaNPP.Text = temp.Rows[0][0].ToString();
+
+
+                    gridControlNK.Enabled = true;
+                    gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NPPMa", txtMaNPP.Text);
+
+                    DataTable temp1 = new DataTable();
+                    temp1 = con.GetDataTable("select HHMa,HHTen from tblHangHoa where NPPMa='" + txtMaNPP.Text + "'");
+                    repositoryItemGridLookUpEdit2.DataSource = temp1;
+                    repositoryItemGridLookUpEdit2.DisplayMember = "HHMa";
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Không có dữ liệu về nhà phân phối!", "Cảnh báo");
+                }
+            }
+
+        }
 
     }
 }
