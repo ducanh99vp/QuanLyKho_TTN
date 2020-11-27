@@ -131,6 +131,54 @@ namespace QuanLiKho
             }
 
         }
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("NPP");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+
+
+        }
+        private void btnOKNK_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SaveChane("tblNhapKhoTemp"))
+                {
+                    XtraMessageBox.Show("Đã lưu!", "Thông Báo");
+                    btnOKNK.Enabled = false;
+                    if (xoaDL == true) btnCancelNK.Enabled = true;
+
+                    con.ThucThiCauLenhSQL("insert into tblNhapKho(HHMa, KMa, DVMa, NKMa, NKNgay, NKSL, NKGia, NKThanhTien, NPPMa) select HHMa, KMa, DVMa, NKMa, NKNgay, NKSL, NKGia, NKThanhTien, NPPMa from tblNhapKhoTemp");
+                    con.ThucThiCauLenhSQL("delete from tblNhapKhoTemp");
+                    //btnRefeshNK_Click(sender, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show("Erro: " + ex.Message);
+            }
+
+        }
+        private void btnRefeshNK_Click(object sender, EventArgs e)
+        {
+            DataTable temp = new DataTable();
+            temp = con.GetDataTable("select * from tblNhapKhoTemp as a join tblHangHoa as b on a.HHMa=b.HHMa");
+
+            gridControlNK.DataSource = temp;
+
+
+            //FormMain_Load(sender, e);
+            btnCancelNK.Enabled = false;
+        }
+        private void comboBoxEditTenNK_Enter(object sender, EventArgs e)
+        {
+            comboBoxEditTenNK_EditValueChanged(sender, e);
+        }
+        private void gridControlNK_Click(object sender, EventArgs e)
+        {
+
+        }
 
     }
 }
