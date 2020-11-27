@@ -20,5 +20,47 @@ namespace QuanLiKho
         {
             InitializeComponent();        
         }
+        ///////// TAB DANH MỤC
+        // KhachHang
+        private void barButtonItem5_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            Them temp = new Them("KhachHang");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+
+            //nhat ki
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xem','" +
+               string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+
+        // Nha Phan Phoi
+        private void barButtonItem6_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            Them temp = new Them("NPP");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+
+            //nhat ki
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xem','" +
+               string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+
+        // Kho
+        private void barButtonItem7_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            Them temp = new Them("Kho");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+
+            //nhat ki
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho Hàng',N'Xem','" +
+               string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+
+
+
     }
 }
