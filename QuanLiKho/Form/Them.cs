@@ -195,9 +195,83 @@ namespace QuanLiKho
                         string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
             }
+            private void btnCancel_ItemClick(object sender, ItemClickEventArgs e)
+            {
+                txtGhiChu.Text = "";
+                txtGia.Text = "";
+                txtMa.Text = "";
+                txtSoLuong.Text = "";
+                txtTen.Text = "";
 
+                gridlookDonVi.EditValue = "";
+                gridlookKho.EditValue = "";
+                gridlookNhom.EditValue = "";
+                gridlookNPP.EditValue = "";
+            }
+            private void btnXoa_ItemClick(object sender, ItemClickEventArgs e)
+            {
+                if (comDonVi.Text != "" || comHangHoa.Text != "" || comKH.Text != "" || comKho.Text != "" || comNhom.Text != "" || comNPP.Text != "")
+                {
+                    if (stateEvent == "HangHoa")
+                    {
+                        SQL_tblHangHoa temp = new SQL_tblHangHoa();
+                        EC_tblHangHoa value = new EC_tblHangHoa();
+                        value.HHMa = con.GetValue("select HHMa from tblHangHoa where HHTen like N'" + comHangHoa.Text + "'", 0);
 
+                        temp.XoaDuLieu(value);
 
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
 
-    }
-    }
+                }
+            }
+            private void btnXoaToanBo_ItemClick(object sender, ItemClickEventArgs e)
+            {
+                DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn xóa hết dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
+
+                if (LuaChon == DialogResult.Yes)
+                {
+                    if (stateEvent == "HangHoa")
+                    {
+                        con.ThucThiCauLenhSQL("DELETE FROM tblHangHoa");
+                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa Toàn Bộ','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+
+                }
+            }
+            private void btnSua_ItemClick(object sender, ItemClickEventArgs e)
+            {
+                gridView6.ResetCursor();
+                DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn sửa dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
+
+                if (LuaChon == DialogResult.Yes)
+                {
+                    if (stateEvent == "HangHoa")
+                    {
+                        if (SaveChane("tblHangHoa"))
+                        {
+                            XtraMessageBox.Show("Đã sửa");
+                            btnSua.Enabled = false;
+
+                            DateTime currentTime = DateTime.Now;
+                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Cập nhật','" +
+                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                        }
+                        else MessageBox.Show("Nhập thiếu!");
+
+                    }
+                }
+            }
+            private void btnCapNhat_ItemClick(object sender, ItemClickEventArgs e)
+            {
+                if (stateEvent == "HangHoa")
+                {
+                    gridControlDL.DataSource = con.GetDataTable("select * from tblHangHoa");
+                }
+            }
