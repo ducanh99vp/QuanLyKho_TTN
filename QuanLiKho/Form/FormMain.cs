@@ -179,6 +179,98 @@ namespace QuanLiKho
         {
 
         }
+        private void gridView2_RowClick_1(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+            if (gridView2.GetRowCellDisplayText(e.RowHandle, "NKMa").ToString() != "")
+            {
+                txtMaNK.Text = gridView2.GetRowCellDisplayText(e.RowHandle, "NKMa").ToString();
+                dateEditNK.EditValue = gridView2.GetRowCellDisplayText(e.RowHandle, "NKNgay").ToString();
+            }
+            else
+            {
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblNhapKhoTemp as a join tblHangHoa as b on a.HHMa=b.HHMa");
+
+                DataTable temp1 = new DataTable();
+                temp1 = con.GetDataTable("select * from tblNhapKho");
+                if (temp1.Rows.Count > 0)
+                {
+                    //lay ma nhap kho
+                    string tempStr = temp1.Rows[temp1.Rows.Count - 1][3].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMaNK.Text = "NK" + i.ToString("0000");
+                }
+                else txtMaNK.Text = "NK0001";
+            }
+
+        }
+        private void repositoryItemGridLookUpEdit2_Leave_1(object sender, EventArgs e)
+        {
+            string getHHMa = gridView2.GetRowCellDisplayText(gridView2.FocusedRowHandle, "HHMa");
+            DataTable temp = new DataTable();
+            try
+            {
+                temp = con.GetDataTable("select * from tblHangHoa where HHMa=N'" + getHHMa + "'");
+            }
+            catch
+            {
+                XtraMessageBox.Show("Mã nhập kho chưa đúng");
+                return;
+            }
+
+            if (temp.Rows.Count != 0)
+            {
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "HHTen", temp.Rows[0][1].ToString().Trim());
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NKMa", txtMaNK.Text);
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NKNgay", dateEditNK.Text);
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NPPMa", txtMaNPP.Text);
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "KMa", temp.Rows[0][4].ToString().Trim());
+                gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "DVMa", temp.Rows[0][3].ToString().Trim());
+
+            }
+
+            if (txtMaNK.Text != "")
+            {
+                btnOKNK.Enabled = true;
+
+            }
+            else btnOKNK.Enabled = false;
+        }
+        private void gridView2_ValidateRow_1(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            int SL, Gia;
+            SL = Convert.ToInt32(gridView2.GetRowCellValue(gridView2.FocusedRowHandle, "NKSL"));
+            Gia = Convert.ToInt32(gridView2.GetRowCellValue(gridView2.FocusedRowHandle, "NKGia"));
+            int TT = SL * Gia;
+            gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NKThanhTien", TT.ToString());
+
+            //lay ma nhap kho
+            string tempStr = txtMaNK.Text;
+
+            int i = Convert.ToInt32(tempStr.Substring(2));
+            i++;
+            txtMaNK.Text = "NK" + i.ToString("0000");
+        }
+        private void NKGiaEdit_Leave(object sender, EventArgs e)
+        {
+            string gia = gridView2.GetRowCellDisplayText(gridView2.FocusedRowHandle, "NKGia").Trim();
+            string soluong = gridView2.GetRowCellDisplayText(gridView2.FocusedRowHandle, "NKSL").Trim();
+
+            if (gia != "" && soluong != "")
+            {
+                try
+                {
+                    string tt = (Convert.ToInt32(gia) * Convert.ToInt32(soluong)).ToString();
+                    gridView2.SetRowCellValue(gridView2.FocusedRowHandle, "NKThanhTien", tt);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show("Erro: " + ex.Message, "Thông Báo");
+                }
+            }
+        }
 
     }
 }
