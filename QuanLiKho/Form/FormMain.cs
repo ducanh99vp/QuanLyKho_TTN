@@ -68,5 +68,56 @@ namespace QuanLiKho
         {
             InitializeComponent();        
         }
+        private void init()
+        {
+            active = false; //khong dang xuat
+
+            //Nhap kho
+            txtMaNPP.Enabled = false;
+            txtGhiChuNK.Enabled = false;
+            txtDiaChiNK.Enabled = false;
+            txtDienThoaiNK.Enabled = false;
+            comboBoxEditTenNK.Enabled = false;
+            txtMaNK.Enabled = false;
+            dateEditNK.Enabled = false;
+            txtMSTNK.Enabled = false;
+            gridControlNK.Enabled = false;
+
+            btnCancelNK.Enabled = false;
+            btnOKNK.Enabled = false;
+            btnRefeshNK.Enabled = false;
+
+            //xuat kho
+            gridLookUpEditTenXK.Enabled = false;
+            gridLookUpEditMaXK.Enabled = false;
+            txtDiaChiXk.Enabled = false;
+            txtDienThoaiXK.Enabled = false;
+            txtGhiChuXK.Enabled = false;
+            txtMaXK.Enabled = false;
+            txtMSTXK.Enabled = false;
+            dateEditNgayXK.Enabled = false;
+            gridControlXK.Enabled = false;
+
+            btnOKXK.Enabled = false;
+            btnRefeshXK.Enabled = false;
+            //btnCancelXK.Enabled = false;
+
+
+            txtMaNK.ReadOnly = true;
+            txtMaXK.ReadOnly = true;
+
+            //bo phan
+            //btnXoaBP.Enabled = false;
+            btnThemBP.Enabled = false;
+            btnRefeshBP.Enabled = false;
+
+            //nhan vien
+            //btnXoaNV.Enabled = false;
+            btnThemNV.Enabled = false;
+            btnRefeshNV.Enabled = false;
+
+            //name ủe
+            lbNameUser.Text += con.GetValue("select name from tblLuuMK where num='1'", 0);
+        }
     }
 }
