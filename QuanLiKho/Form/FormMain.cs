@@ -271,6 +271,36 @@ namespace QuanLiKho
                 }
             }
         }
+        private void btnCancelNK_Click(object sender, EventArgs e)
+        {
+            if (gridControlNK.Enabled == true)
+            {
+                string MaNK = gridView2.GetRowCellDisplayText(gridView2.FocusedRowHandle, "NKMa").Trim();
+
+                try
+                {
+                    con.ThucThiCauLenhSQL("delete from tblNhapKho where NKMa='" + MaNK + "'");
+                    XtraMessageBox.Show("Đã xóa");
+                    //btnRefeshNK_Click(sender, e);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show("Erro: " + ex.Message);
+                }
+
+            }
+
+        }
+        private void btnPrintNK_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.xls", gridControlNK);
+        }
+        private void simpleButton6_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.pdf", gridControlNK);
+        }
 
     }
 }
