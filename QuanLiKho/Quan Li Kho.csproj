@@ -146,7 +146,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form\FormMain.cs" />
+    <Compile Include="Form\DangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\DangNhap.Designer.cs">
+      <DependentUpon>DangNhap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
@@ -167,6 +175,9 @@
     <Compile Include="Script\SQL_tblKhachHang.cs" />
     <Compile Include="Script\SQL_tblXuatKho.cs" />
     <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="Form\DangNhap.resx">
+      <DependentUpon>DangNhap.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
