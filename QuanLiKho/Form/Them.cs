@@ -295,8 +295,21 @@ namespace QuanLiKho
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
+                    else if (stateEvent == "DonVi")
+                    {
+                        SQL_tblDonVi temp = new SQL_tblDonVi();
+                        EC_tblDonVi value = new EC_tblDonVi();
+                        value.DVTen = comDonVi.Text;
+
+                        temp.XoaDuLieu(value);
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
 
                 }
+                else MessageBox.Show("Chưa chọn", "Thông báo");
             }
             private void btnXoaToanBo_ItemClick(object sender, ItemClickEventArgs e)
             {
@@ -313,8 +326,21 @@ namespace QuanLiKho
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa Toàn Bộ','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
+                    else if (stateEvent == "DonVi")
+                    {
+                        con.ThucThiCauLenhSQL("DELETE FROM tblDonVi");
+                        MessageBox.Show("Đã Xóa!", "Thông báo");
 
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa Toàn Bộ','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
                 }
+                else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
+                {
+                    return;
+                }
+
             }
             private void btnSua_ItemClick(object sender, ItemClickEventArgs e)
             {
@@ -337,6 +363,23 @@ namespace QuanLiKho
                         else MessageBox.Show("Nhập thiếu!");
 
                     }
+                    else if (stateEvent == "DonVi")
+                    {
+                        if (SaveChane("tblDonVi"))
+                        {
+                            XtraMessageBox.Show("Đã sửa");
+                            btnSua.Enabled = false;
+
+                            DateTime currentTime = DateTime.Now;
+                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Cập nhật','" +
+                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                        }
+                        else MessageBox.Show("Nhập thiếu!");
+                    }
+                }
+                else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
+                {
+                    return;
                 }
             }
             private void btnCapNhat_ItemClick(object sender, ItemClickEventArgs e)
@@ -344,5 +387,9 @@ namespace QuanLiKho
                 if (stateEvent == "HangHoa")
                 {
                     gridControlDL.DataSource = con.GetDataTable("select * from tblHangHoa");
+                }
+                else if (stateEvent == "DonVi")
+                {
+                    gridControlDL.DataSource = con.GetDataTable("select * from tblDonVi");
                 }
             }
