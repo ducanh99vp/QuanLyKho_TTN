@@ -50,6 +50,50 @@ namespace QuanLiKho
             gridControlBoPhan.DataSource = temp;
         }
 
+        private void btnXoaBP_Click(object sender, EventArgs e)
+        {
+            if (gridControlBoPhan.Enabled == true)
+            {
+                string MaBP = gridView10.GetRowCellDisplayText(gridView10.FocusedRowHandle, "BPMa").Trim();
 
+                try
+                {
+                    con.ThucThiCauLenhSQL("delete from tblBoPhan where BPMa='" + MaBP + "'");
+                    XtraMessageBox.Show("Đã xóa");
+                    btnRefeshBP_Click(sender, e);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show("Erro: " + ex.Message);
+                }
+
+            }
+        }
+
+        private void btnThemBP_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable temp = gridControlBoPhan.DataSource as DataTable;
+                SqlDataAdapter cmd = con.GetCmd("select * from tblBoPhan");
+
+                cmd.Update(temp.GetChanges());
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show("Erro: " + ex.Message);
+            }
+
+            FormMain_Load(sender, e);
+        }
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBP.Text != "")
+            {
+                DataTable temp = con.GetDataTable("select * from tblBoPhan" + " where BPMa='" + comboBP.Text + "'");
+                gridControlBoPhan.DataSource = temp;
+            }
+
+        }
     }
 }
