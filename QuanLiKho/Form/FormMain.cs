@@ -86,6 +86,43 @@ namespace QuanLiKho
         {
 
         }
+        private bool SaveChane(string cmd)
+        {
+            bool res = false;
+            SqlDataAdapter sql = con.GetCmd("select * from " + cmd);
+            try
+            {
+                if (cmd == "tblXuatKhoTemp")
+                {
+                    DataTable temp = gridControlXK.DataSource as DataTable;
+
+                    sql.Update(temp.GetChanges());  //luu tat ca nhung thay doi
+                    con.UpdateHangHoa(temp, "XuatKho");
+                }
+                if (cmd == "tblNhapKhoTemp")
+                {
+                    DataTable temp = gridControlNK.DataSource as DataTable;
+
+                    sql.Update(temp.GetChanges());  //luu tat ca nhung thay doi
+                    con.UpdateHangHoa(temp, "NhapKho");
+
+                }
+
+                res = true;
+            }
+            catch (Exception e)
+            {
+                XtraMessageBox.Show(e.Message);
+                res = false;
+            }
+            finally
+            {
+                con.DongKetNoiMetho();
+            }
+
+            return res;
+        }
+
         private void init()
         {
             active = false; //khong dang xuat
@@ -170,7 +207,6 @@ namespace QuanLiKho
         }
 
         //xoa tab
-
         private void xtraTabMain_Close(object sender, EventArgs e)
         {
             DevExpress.XtraTab.XtraTabControl TabControl = (DevExpress.XtraTab.XtraTabControl)sender;
