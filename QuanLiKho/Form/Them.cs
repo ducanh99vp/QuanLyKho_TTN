@@ -114,6 +114,55 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "HH0001";
             }
+            if (state == "DonVi")
+            {
+                lbMa.Text = "Mã Đơn vị";
+                lbTen.Text = "Tên Đơn vị";
+                lbSL.Text = "Ghi chú";
+                lbGia.Dispose();
+                txtGia.Dispose();
+                lbGhiChu.Dispose();
+                txtGhiChu.Dispose();
+                lbNameXoa.Text = "Đơn Vị";
+
+                grNPP.Enabled = false;
+                grKho.Enabled = false;
+                grNhom.Enabled = false;
+                grDonVi.Enabled = false;
+
+                //dữ liệu Xóa
+                comHangHoa.Dispose();
+                comKH.Dispose();
+                comKho.Dispose();
+                comNhom.Dispose();
+                comNPP.Dispose();
+
+                comDonVi.Location = comHangHoa.Location;
+
+                //data
+
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblDonVi");
+
+                gridControlDL.DataSource = temp;
+
+                DataTable tempp = new DataTable();
+                tempp = con.GetDataTable("select DVMa,DVTen from tblDonVi");
+
+                comDonVi.Properties.DataSource = tempp;
+                comDonVi.Properties.DisplayMember = "DVTen";
+
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp.Rows[temp.Rows.Count - 1][0].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMa.Text = "DV" + i.ToString("0000");
+                }
+                else txtMa.Text = "DV0001";
+            }
 
         }
         private void XtraTabMain_Click(object sender, EventArgs e)
@@ -193,6 +242,28 @@ namespace QuanLiKho
                     DateTime currentTime = DateTime.Now;
                     con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Thêm','" +
                         string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (state == "DonVi")
+                {
+                    SQL_tblDonVi temp = new SQL_tblDonVi();
+                    EC_tblDonVi value = new EC_tblDonVi();
+
+                    value.DVMa = txtMa.Text;
+                    value.DVTen = txtTen.Text;
+                    value.DVGhiChu = txtSoLuong.Text;
+
+                    try
+                    {
+                        temp.ThemDuLieu(value);
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu!");
+                        return;
+                    }
+                    XtraMessageBox.Show("Đã thêm!");
+                    DateTime currentTime = DateTime.Now;
+
                 }
             }
             private void btnCancel_ItemClick(object sender, ItemClickEventArgs e)
