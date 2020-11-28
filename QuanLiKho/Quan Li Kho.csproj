@@ -146,6 +146,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="Form\DangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +156,15 @@
     <Compile Include="Form\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
+=======
+    <Compile Include="Form\DoiMK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\DoiMK.Designer.cs">
+      <DependentUpon>DoiMK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FormMain.cs" />
+>>>>>>> origin/BT_DoiMatKhau
     <Compile Include="Form\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
@@ -175,8 +185,13 @@
     <Compile Include="Script\SQL_tblKhachHang.cs" />
     <Compile Include="Script\SQL_tblXuatKho.cs" />
     <Compile Include="Settings.cs" />
+<<<<<<< HEAD
     <EmbeddedResource Include="Form\DangNhap.resx">
       <DependentUpon>DangNhap.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="Form\DoiMK.resx">
+      <DependentUpon>DoiMK.cs</DependentUpon>
+>>>>>>> origin/BT_DoiMatKhau
     </EmbeddedResource>
     <EmbeddedResource Include="Form\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
