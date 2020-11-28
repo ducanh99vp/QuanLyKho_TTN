@@ -103,5 +103,114 @@ namespace QuanLiKho
             dateEditNgayXK.Text = DateTime.Today.ToString();
 
         }
+        private void gridLookUpEditTenXK_EditValueChanged(object sender, EventArgs e)
+        {
+            DataTable temp = new DataTable();
+            if (gridLookUpEditTenXK.Text != "")
+            {
+                try
+                {
+                    string cmd = "SELECT * FROM tblKhachHang WHERE KHTen Like N'" + gridLookUpEditTenXK.Text + "'";
+                    temp = con.GetDataTable(cmd);
+
+                    txtDiaChiXk.Text = temp.Rows[0][2].ToString();
+                    txtMSTXK.Text = temp.Rows[0][3].ToString();
+                    txtDienThoaiXK.Text = temp.Rows[0][4].ToString();
+                    //txtGhiChuXK.Text = temp.Rows[0][4].ToString();
+                    gridLookUpEditMaXK.Text = temp.Rows[0][0].ToString();
+
+                    gridControlXK.Enabled = true;
+
+                    gridView6.SetRowCellValue(gridView6.FocusedRowHandle, "KHMa", gridLookUpEditMaXK.Text);
+
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Không có dữ liệu về khách hàng!", "Cảnh báo");
+                }
+                DataTable temp1 = new DataTable();
+                temp1 = con.GetDataTable("select HHMa,HHTen,HHTonHienTai from tblHangHoa");
+                repositoryItemGridLookUpEdit1.DataSource = temp1;
+                repositoryItemGridLookUpEdit1.DisplayMember = "HHMa";
+            }
+
+        }
+        private void btnRefeshXK_Click(object sender, EventArgs e)
+        {
+            DataTable temp = new DataTable();
+            temp = con.GetDataTable("select * from tblXuatKhoTemp as a join tblHangHoa as b on a.HHMa=b.HHMa");
+
+            gridControlXK.DataSource = temp;
+
+            //FormMain_Load(sender, e);
+            btnCancelXK.Enabled = false;
+        }
+        private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("KhachHang");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void btnOKXK_Click(object sender, EventArgs e)
+        {
+
+            if (SaveChane("tblXuatKhoTemp"))
+            {
+                XtraMessageBox.Show("Đã lưu!", "Thông Báo");
+                btnOKXK.Enabled = false;
+                if (xoaDL == true) btnCancelXK.Enabled = true;
+
+                con.ThucThiCauLenhSQL("insert into tblXuatKho(HHMa, KMa, XKMa, DVMa, XKSL, XKGia, KHMa, XKNgay, XKThanhTien) select HHMa, KMa, XKMa, DVMa, XKSL, XKGia, KHMa, XKNgay, XKThanhTien from tblXuatKhoTemp");
+                con.ThucThiCauLenhSQL("delete from tblXuatKhoTemp");
+                //btnRefeshXK_Click(sender, e);
+            }
+
+        }
+        private void gridView6_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+
+            if (gridView6.GetRowCellDisplayText(e.RowHandle, "XKMa").ToString() != "")
+            {
+                txtMaXK.Text = gridView6.GetRowCellDisplayText(e.RowHandle, "XKMa").ToString();
+                dateEditNgayXK.EditValue = gridView6.GetRowCellDisplayText(e.RowHandle, "XKNgay").ToString();
+            }
+            else
+            {
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblXuatKhoTemp as a join tblHangHoa as b on a.HHMa=b.HHMa");
+
+                //lay ma xuat kho
+
+                DataTable temp1 = new DataTable();
+                temp1 = con.GetDataTable("select * from tblXuatKho");
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp1.Rows[temp1.Rows.Count - 1][3].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMaXK.Text = "XK" + i.ToString("0000");
+                }
+                else txtMaXK.Text = "XK0001";
+            }
+
+
+        }
+        private void gridView6_ValidateRow(object sender, DevExpress.XtraGrid.Views.Base.ValidateRowEventArgs e)
+        {
+            int SL, Gia;
+            SL = Convert.ToInt32(gridView6.GetRowCellValue(gridView6.FocusedRowHandle, "XKSL"));
+            Gia = Convert.ToInt32(gridView6.GetRowCellValue(gridView6.FocusedRowHandle, "XKGia"));
+            int TT = SL * Gia;
+            gridView6.SetRowCellValue(gridView6.FocusedRowHandle, "XKThanhTien", TT.ToString());
+
+            //tu dong them ma xuat kho
+            string tempStr = txtMaXK.Text;
+
+            int i = Convert.ToInt32(tempStr.Substring(2));
+            i++;
+            txtMaXK.Text = "XK" + i.ToString("0000");
+        }
     }
 }
