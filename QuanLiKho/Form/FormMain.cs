@@ -256,5 +256,21 @@ namespace QuanLiKho
             else XtraMessageBox.Show("Bạn không thể tắt tất cả các page!", "Cảnh báo");
         }
 
+        // TAB TỔNG HỢP KHO
+        private void barbtnTHK_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            AddXtraTab(BDXK);
+            gridHH.Text = "";
+            gridHHXK.Text = "";
+
+            btnNow_Click(sender, e);
+            btnNowXK_Click(sender, e);
+            //chartTK.DataSource = con.GetDataTable("select HHTen,HHSL from tblHangHoa");
+
+            //nhat ki 
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Tổng Hợp Kho',N'Xem','" +
+                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
     }
 }
