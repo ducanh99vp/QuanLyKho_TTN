@@ -20,5 +20,36 @@ namespace QuanLiKho
         {
             InitializeComponent();        
         }
+        // TAB BỘ PHẬN
+        private void barButtonItem11_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            //bo phan
+
+            AddXtraTab(xtrapTPBoPhan);
+            gridView10.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.None;
+
+            DataTable temp = con.GetDataTable("select * from tblBoPhan");
+            gridControlBoPhan.DataSource = temp;
+
+            //nhat ki
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Bộ Phận',N'Xem','" +
+               string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+        private void btnNewBP_Click(object sender, EventArgs e)
+        {
+            gridView10.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Top;
+
+            btnThemBP.Enabled = true;
+            btnRefeshBP.Enabled = true;
+        }
+
+        private void btnRefeshBP_Click(object sender, EventArgs e)
+        {
+            DataTable temp = con.GetDataTable("select * from tblBoPhan");
+            gridControlBoPhan.DataSource = temp;
+        }
+
+
     }
 }
