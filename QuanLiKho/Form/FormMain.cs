@@ -66,7 +66,25 @@ namespace QuanLiKho
         private string stateQL;
         public FormMain()
         {
-            InitializeComponent();        
+            InitializeComponent();
+            //tat tat ca cac xtraTab
+            //======================================================================
+            for (int i = 0; i < xtraTabMain.TabPages.Count; i++)
+            {
+                if (xtraTabMain.TabPages[i].Text != "Nhập Kho")
+                    xtraTabMain.TabPages.Remove(xtraTabMain.TabPages[i]);
+            }
+            xtraTabMain.TabPages.Remove(xtraTPTonKho);
+            xtraTabMain.TabPages.Remove(BDXK);
+            xtraTabMain.TabPages.Remove(xtrapTPBoPhan);
+            xtraTabMain.TabPages.Remove(xtraTPNhanVien);
+            xtraTabMain.TabPages.Remove(xtraTPPhanQuyen);
+            //======================================================================
+            init();
+        }
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
         private void init()
         {
@@ -119,5 +137,53 @@ namespace QuanLiKho
             //name ủe
             lbNameUser.Text += con.GetValue("select name from tblLuuMK where num='1'", 0);
         }
+        //them tab
+        private void AddXtraTab(DevExpress.XtraTab.XtraTabPage xtraTabName)
+        {
+
+            switch (xtraTabName.Text)
+            {
+                case "Nhập Kho":
+                    StateManager = state.StateNK;
+                    break;
+                case "Xuất Kho":
+                    StateManager = state.StateXK;
+                    break;
+                case "Tồn Kho":
+                    StateManager = state.StateTK;
+                    break;
+            }
+
+            xtraTabMain.SelectedTabPage = xtraTabName;
+
+
+            //kiem tra xem tab da co chua
+            for (int i = 0; i < xtraTabMain.TabPages.Count; i++)
+            {
+                if (xtraTabName.Text == xtraTabMain.TabPages[i].Text)
+                {
+                    return;
+                }
+            }
+            vSoXtraTab++;
+            xtraTabMain.TabPages.Add(xtraTabName);
+        }
+
+        //xoa tab
+
+        private void xtraTabMain_Close(object sender, EventArgs e)
+        {
+            DevExpress.XtraTab.XtraTabControl TabControl = (DevExpress.XtraTab.XtraTabControl)sender;
+
+            if (vSoXtraTab != 1)
+            {
+                xtraTabMain.SelectedTabPageIndex -= 1;
+                DevExpress.XtraTab.ViewInfo.ClosePageButtonEventArgs arg = e as DevExpress.XtraTab.ViewInfo.ClosePageButtonEventArgs;
+                TabControl.TabPages.Remove(arg.Page as DevExpress.XtraTab.XtraTabPage);
+                vSoXtraTab--;
+            }
+            else XtraMessageBox.Show("Bạn không thể tắt tất cả các page!", "Cảnh báo");
+        }
+
     }
 }
