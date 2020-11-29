@@ -20,5 +20,30 @@ namespace QuanLiKho
         {
             InitializeComponent();        
         }
+        ///////// TAB HỆ THỐNG
+        // Dang Xuat
+        private void barBtnDangXuat_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            active = true;
+
+            this.Close();
+
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đăng Xuất',N'Xem','" +
+                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+
+            lbNameUser.Text = "Quyền ";
+        }
+        // Thoat he thong
+        private void barBtnExit_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            active = false;
+            Application.Exit();
+        }
+        public bool DangXuat()
+        {
+            return active; //true la dang xuat, false la thoat
+        }
+
     }
 }
