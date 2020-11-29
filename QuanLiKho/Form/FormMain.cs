@@ -35,6 +35,53 @@ namespace QuanLiKho
             con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhân Viên',N'Xem','" +
                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
         }
+        private void btnNewNhanVien_Click(object sender, EventArgs e)
+        {
+            gridView11.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
+
+            btnThemNV.Enabled = true;
+            btnRefeshNV.Enabled = true;
+        }
+        private void btnRefeshNV_Click(object sender, EventArgs e)
+        {
+            DataTable temp = con.GetDataTable("select * from tblNhanVien");
+            gridControlNhanVien.DataSource = temp;
+        }
+        private void btnXoaNV_Click(object sender, EventArgs e)
+        {
+            if (gridControlNhanVien.Enabled == true)
+            {
+                string MaNV = gridView11.GetRowCellDisplayText(gridView10.FocusedRowHandle, "NVMa").Trim();
+
+                try
+                {
+                    con.ThucThiCauLenhSQL("delete from tblNhanVien where NVMa='" + MaNV + "'");
+                    XtraMessageBox.Show("Đã xóa");
+                    btnRefeshNV_Click(sender, e);
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show("Erro: " + ex.Message);
+                }
+
+            }
+        }
+        private void btnThemNV_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable temp = gridControlNhanVien.DataSource as DataTable;
+                SqlDataAdapter cmd = con.GetCmd("select * from tblNhanVien");
+
+                cmd.Update(temp.GetChanges());
+
+                XtraMessageBox.Show("Đã thêm", "Thông Báo");
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show("Erro: " + ex.Message);
+            }
+        }
         private void MBP_Click(object sender, EventArgs e)
         {
             gridView11.SetRowCellValue(gridView11.FocusedRowHandle, "BPMa", con.GetValue("select BPMa from tblBoPhan where BPTen=N'" + comboBP.Text + "'", 0));
