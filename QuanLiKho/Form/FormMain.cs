@@ -293,5 +293,110 @@ namespace QuanLiKho
             ExportToExcel temp = new ExportToExcel();
             temp.exportFile("*.xls", gridControlXK);
         }
+        // TAB TON KHO
+        private void barBtnTonKho_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+
+            //them tab
+            AddXtraTab(xtraTPTonKho);
+
+            DataTable temp = new DataTable();
+            temp = con.GetDataTable("select a.HHMa,a.HHTen,a.HHGia,c.DVTen,b.KTen,e.NPPTen,a.HHTonHienTai,d.NTen,a.HHThanhTien " +
+                "from tblHangHoa as a join tblKho as b ON a.KMa=b.KMa join tblDonVi as c on a.DVMa=c.DVMa join tblNhom as d ON a.NMa=d.NMa join tblNPP as e " +
+                "on a.NPPMa=e.NPPMa ");
+            //temp = con.GetDataTable("select * from tblHangHoa as a join tblKho as b on a.KMa=b.KMa join tblDonVi as c on a.DVMa=c.DVMa join tblNPP as d on a.NPPMa=d.NPPMa "+
+            //    "join tblNhom as e on a.NMa=e.NMa");
+
+            gridControlTK.DataSource = temp;
+
+            //cac thanh cong cu
+            lbName.Hide();
+            gridNhom.Hide();
+            gridNPP.Hide();
+            gridHangHoa.Hide();
+            gridKho.Hide();
+
+            //nhat ki 
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Tồn Kho',N'Xem','" +
+                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+        private void navBarItem15_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            lbName.Hide();
+            gridNhom.Hide();
+            gridNPP.Hide();
+            gridHangHoa.Hide();
+            gridKho.Hide();
+
+            gridView8.ActiveFilterString = null;
+        }
+
+        private void navBarGroup5_ItemChanged(object sender, EventArgs e)
+        {
+            //gridNhom.Hide();
+            //gridNPP.Hide();
+            //gridHangHoa.Hide();
+            //gridKho.Hide();
+        }
+
+        private void navBarItem17_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            lbName.Show();
+            lbName.Text = "Hàng Hóa";
+            gridNhom.Hide();
+            gridNPP.Hide();
+            gridHangHoa.Show();
+            gridKho.Hide();
+
+
+        }
+
+        private void navBarItem18_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            lbName.Show();
+            lbName.Text = "NPP";
+            gridNhom.Hide();
+            gridNPP.Show();
+            gridHangHoa.Hide();
+            gridKho.Hide();
+
+            gridNPP.Location = gridHangHoa.Location;
+        }
+
+        private void navBarItem19_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            lbName.Show();
+            lbName.Text = "Nhóm Hàng";
+            gridNhom.Show();
+            gridNPP.Hide();
+            gridHangHoa.Hide();
+            gridKho.Hide();
+
+            gridNhom.Location = gridHangHoa.Location;
+        }
+
+        private void navBarItem20_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            lbName.Show();
+            lbName.Text = "Kho";
+            gridNhom.Hide();
+            gridNPP.Hide();
+            gridHangHoa.Hide();
+            gridKho.Show();
+
+            gridKho.Location = gridHangHoa.Location;
+        }
+        private void simpleButton9_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.xls", gridControlTK);
+        }
+
+        private void simpleButton8_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.pdf", gridControlTK);
+        }
     }
 }
