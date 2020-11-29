@@ -325,6 +325,91 @@ namespace QuanLiKho
 
             //MessageBox.Show(start+end);
         }
+        private void comboxDate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gridHH.Text = "";
+
+            if (comboxDate.SelectedIndex == 0)
+            {
+                dateState = "tuan";
+                btnNow.Text = "Tuần Này";
+                btnYester.Text = "Tuần Trước";
+
+                btnNow_Click(sender, e);
+            }
+            if (comboxDate.SelectedIndex == 1)
+            {
+                dateState = "thang";
+                btnNow.Text = "Tháng Này";
+                btnYester.Text = "Tháng Trước";
+
+                btnNow_Click(sender, e);
+            }
+            if (comboxDate.SelectedIndex == 2)
+            {
+                dateState = "quy";
+                btnNow.Text = "Quý Này";
+                btnYester.Text = "Quý Trước";
+
+                btnNow_Click(sender, e);
+            }
+        }
+
+        private void btnYester_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan truoc
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+            tempTime = tempTime.AddDays(-7);
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                tempTime = tempTime.AddMonths(-1);
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                tempTime = tempTime.AddMonths(-3);
+                if (tempTime.Month < 4)
+                {
+                    start = tempTime.Year + "/1/1";
+                    end = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start = tempTime.Year + "/4/1";
+                    end = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start = tempTime.Year + "/7/1";
+                    end = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start = tempTime.Year + "/10/1";
+                    end = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+
+            //MessageBox.Show(start+end);
+        }
 
     }
 }
