@@ -163,6 +163,54 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "DV0001";
             }
+            if (state == "KhachHang")
+            {
+                lbMa.Text = "Mã Khách Hàng";
+                lbTen.Text = "Tên Khách Hàng";
+                lbSL.Text = "Địa chỉ";
+                lbGia.Text = "Số Điện Thoại";
+                lbGhiChu.Text = "MST";
+                lbNameXoa.Text = "Khách Hàng";
+
+                grNPP.Enabled = false;
+                grKho.Enabled = false;
+                grNhom.Enabled = false;
+                grDonVi.Enabled = false;
+
+                //dữ liệu Xóa
+                comHangHoa.Dispose();
+                comDonVi.Dispose();
+                comKho.Dispose();
+                comNhom.Dispose();
+                comNPP.Dispose();
+
+                comKH.Location = comHangHoa.Location;
+
+                //data
+
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblKhachHang");
+
+                gridControlDL.DataSource = temp;
+
+                DataTable tempp = new DataTable();
+                tempp = con.GetDataTable("select KHMa,KHTen from tblKhachHang");
+
+                comKH.Properties.DataSource = tempp;
+                comHangHoa.Properties.DisplayMember = "KHTen";
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp.Rows[temp.Rows.Count - 1][0].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMa.Text = "KH" + i.ToString("0000");
+                }
+                else txtMa.Text = "KH0001";
+            }
+
+
 
         }
         private void XtraTabMain_Click(object sender, EventArgs e)
@@ -263,6 +311,35 @@ namespace QuanLiKho
                     }
                     XtraMessageBox.Show("Đã thêm!");
                     DateTime currentTime = DateTime.Now;
+
+                }
+                else if (state == "KhachHang")
+                {
+                    SQL_tblKhachHang temp = new SQL_tblKhachHang();
+                    EC_tblKhachHang value = new EC_tblKhachHang();
+
+                    value.KHMa = txtMa.Text;
+                    value.KHTen = txtTen.Text;
+                    value.KHDiaChi = txtSoLuong.Text;
+                    value.KHDienThoai = txtGia.Text;
+                    value.KHMaSoThue = txtGhiChu.Text;
+
+                    try
+                    {
+                        temp.ThemDuLieu(value);
+
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu!");
+                        return;
+                    }
+
+                    XtraMessageBox.Show("Đã thêm");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Thêm','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
 
                 }
             }
