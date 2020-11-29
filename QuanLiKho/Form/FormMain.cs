@@ -272,5 +272,59 @@ namespace QuanLiKho
             con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Tổng Hợp Kho',N'Xem','" +
                 string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
         }
+        private void btnNow_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan nay
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                if (tempTime.Month < 4)
+                {
+                    start = tempTime.Year + "/1/1";
+                    end = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start = tempTime.Year + "/4/1";
+                    end = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start = tempTime.Year + "/7/1";
+                    end = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start = tempTime.Year + "/10/1";
+                    end = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+
+            //MessageBox.Show(start+end);
+        }
+
     }
 }
