@@ -122,7 +122,42 @@ namespace QuanLiKho
 
             return res;
         }
-
+        private void navBarItem1_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("HangHoa");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void navBarItem3_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("NPP");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void navBarItem2_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("Kho");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void navBarItem8_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("HangHoa");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void navBarItem9_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("KhachHang");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
+        private void navBarItem10_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            Them temp = new Them("Kho");
+            temp.ShowDialog();
+            FormMain_Load(sender, e);
+        }
         private void init()
         {
             active = false; //khong dang xuat
