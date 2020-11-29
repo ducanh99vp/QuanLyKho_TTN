@@ -209,6 +209,53 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "KH0001";
             }
+            if (state == "Kho")
+            {
+                lbTen.Text = "Tên Kho";
+                lbMa.Text = "Mã Kho";
+                lbSL.Text = "Người Liên Hệ";
+                lbGia.Text = "Địa chỉ";
+                lbGhiChu.Text = "Ghi chú";
+                lbNameXoa.Text = "Kho";
+
+                grNPP.Enabled = false;
+                grKho.Enabled = false;
+                grNhom.Enabled = false;
+                grDonVi.Enabled = false;
+
+                //dữ liệu Xóa
+                comHangHoa.Dispose();
+                comDonVi.Dispose();
+                comKH.Dispose();
+                comNhom.Dispose();
+                comNPP.Dispose();
+
+                comKho.Location = comHangHoa.Location;
+
+                //data
+
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblKho");
+
+                gridControlDL.DataSource = temp;
+
+                DataTable tempp = new DataTable();
+                tempp = con.GetDataTable("select KMa,KTen from tblKho");
+
+                comKho.Properties.DataSource = tempp;
+                comKho.Properties.DisplayMember = "KTen";
+
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp.Rows[temp.Rows.Count - 1][0].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMa.Text = "K" + i.ToString("0000");
+                }
+                else txtMa.Text = "K0001";
+            }
 
 
 
@@ -342,6 +389,31 @@ namespace QuanLiKho
                         string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
 
                 }
+                else if (state == "Kho")
+                {
+                    SQL_Kho temp = new SQL_Kho();
+                    EC_tblKho value = new EC_tblKho();
+
+                    value.KMa = txtMa.Text;
+                    value.KTen = txtTen.Text;
+                    value.KNguoiLienHe = value.KNguoiQuanLi = txtSoLuong.Text;
+                    value.KDiaChi = txtGia.Text;
+
+                    try
+                    {
+                        temp.ThemDuLieu(value);
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu!");
+                        return;
+                    }
+                    XtraMessageBox.Show("Đã thêm!");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Thêm','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
             }
             private void btnCancel_ItemClick(object sender, ItemClickEventArgs e)
             {
@@ -384,6 +456,18 @@ namespace QuanLiKho
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
+                    else if (stateEvent == "KhachHang")
+                    {
+                        SQL_tblKhachHang temp = new SQL_tblKhachHang();
+                        EC_tblKhachHang value = new EC_tblKhachHang();
+                        value.KHTen = comKH.Text;
+
+                        temp.XoaDuLieu(value);
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
 
                 }
                 else MessageBox.Show("Chưa chọn", "Thông báo");
@@ -410,6 +494,15 @@ namespace QuanLiKho
 
                         DateTime currentTime = DateTime.Now;
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa Toàn Bộ','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else if (stateEvent == "KhachHang")
+                    {
+                        con.ThucThiCauLenhSQL("DELETE FROM tblKhachHang");
+                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa Toàn Bộ','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
                 }
@@ -453,6 +546,19 @@ namespace QuanLiKho
                         }
                         else MessageBox.Show("Nhập thiếu!");
                     }
+                    else if (stateEvent == "KhachHang")
+                    {
+                        if (SaveChane("tblKhachHang"))
+                        {
+                            XtraMessageBox.Show("Đã sửa");
+                            btnSua.Enabled = false;
+
+                            DateTime currentTime = DateTime.Now;
+                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Cập nhật','" +
+                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                        }
+                        else MessageBox.Show("Nhập thiếu!");
+                    }
                 }
                 else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
                 {
@@ -468,5 +574,9 @@ namespace QuanLiKho
                 else if (stateEvent == "DonVi")
                 {
                     gridControlDL.DataSource = con.GetDataTable("select * from tblDonVi");
+                }
+                else if (stateEvent == "KhachHang")
+                {
+                    gridControlDL.DataSource = con.GetDataTable("select * from tblKhachHang");
                 }
             }
