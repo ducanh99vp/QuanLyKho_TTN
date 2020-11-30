@@ -256,6 +256,106 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "K0001";
             }
+            if (state == "Nhom")
+            {
+                lbMa.Text = "Mã Nhóm";
+                lbTen.Text = "Tên Nhóm";
+                lbSL.Text = "Ghi Chú";
+                lbGia.Dispose();
+                lbGhiChu.Dispose();
+                txtGhiChu.Dispose();
+                txtGia.Dispose();
+                lbNameXoa.Text = "Nhóm";
+
+                grNPP.Enabled = false;
+                grNhom.Enabled = false;
+                grDonVi.Enabled = false;
+
+                //dữ liệu Xóa
+                comHangHoa.Dispose();
+                comDonVi.Dispose();
+                comKH.Dispose();
+                comKho.Dispose();
+                comNPP.Dispose();
+
+                comNhom.Location = comHangHoa.Location;
+
+                //data
+
+                DataTable temp1 = new DataTable();
+                temp1 = con.GetDataTable("select * from tblKho");
+                gridlookKho.Properties.DataSource = temp1;
+                gridlookKho.Properties.DisplayMember = "KTen";
+
+
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select a.NMa,a.NTen,a.NGhiChu,a.KMa,b.KTen,b.KDiaChi,b.KNguoiLienHe,b.KDienThoai from tblNhom as a join tblKho as b on a.KMa=b.KMa");
+
+                gridControlDL.DataSource = temp;
+
+                DataTable tempp = new DataTable();
+                tempp = con.GetDataTable("select NMa,NTen from tblNhom");
+
+                comNhom.Properties.DataSource = tempp;
+                comNhom.Properties.DisplayMember = "NTen";
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp.Rows[temp.Rows.Count - 1][0].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(2));
+                    i++;
+                    txtMa.Text = "N" + i.ToString("0000");
+                }
+                else txtMa.Text = "N0001";
+            }
+
+            if (state == "NPP")
+            {
+                lbMa.Text = "Mã NPP";
+                lbTen.Text = "Tên NPP";
+                lbSL.Text = "Địa chỉ";
+                lbGia.Text = "Điện thoại";
+                lbGhiChu.Text = "MST";
+                lbNameXoa.Text = "Nhà Phân Phối";
+
+                grNPP.Enabled = false;
+                grKho.Enabled = false;
+                grNhom.Enabled = false;
+                grDonVi.Enabled = false;
+
+                //dữ liệu Xóa
+                comHangHoa.Dispose();
+                comDonVi.Dispose();
+                comKH.Dispose();
+                comNhom.Dispose();
+                comKho.Dispose();
+
+                comNPP.Location = comHangHoa.Location;
+
+                //data
+
+                DataTable temp = new DataTable();
+                temp = con.GetDataTable("select * from tblNPP");
+
+                gridControlDL.DataSource = temp;
+
+                DataTable tempp = new DataTable();
+                tempp = con.GetDataTable("select NPPMa,NPPTen from tblNPP");
+
+                comNPP.Properties.DataSource = tempp;
+                comNPP.Properties.DisplayMember = "NPPTen";
+
+                if (temp.Rows.Count > 0)
+                {
+                    string tempStr = temp.Rows[temp.Rows.Count - 1][0].ToString();
+
+                    int i = Convert.ToInt32(tempStr.Substring(3));
+                    i++;
+                    txtMa.Text = "NPP" + i.ToString("0000");
+                }
+                else txtMa.Text = "NPP0001";
+            }
 
 
 
@@ -412,6 +512,67 @@ namespace QuanLiKho
 
                     DateTime currentTime = DateTime.Now;
                     con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Thêm','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (state == "Nhom")
+                {
+                    SQL_Nhom temp = new SQL_Nhom();
+                    EC_tblNhom value = new EC_tblNhom();
+
+                    value.NMa = txtMa.Text;
+                    value.NTen = txtTen.Text;
+                    value.NGhiChu = txtSoLuong.Text;
+                    try
+                    {
+                        value.KMa = con.GetValue("select KMa from tblKho where KTen like N'" + gridlookKho.Text + "'", 0);
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu!");
+                    }
+
+                    try
+                    {
+                        temp.ThemDuLieu(value);
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu");
+
+                        return;
+                    }
+
+                    XtraMessageBox.Show("Đã thêm!");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Thêm','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (state == "NPP")
+                {
+                    SQL_NPP temp = new SQL_NPP();
+                    EC_tblNPP value = new EC_tblNPP();
+
+                    value.NPPMa = txtMa.Text;
+                    value.NPPTen = txtTen.Text;
+                    value.NPPDiaChi = txtSoLuong.Text;
+                    value.NPPMaSoThue = txtGhiChu.Text;
+                    value.DienThoai = txtGia.Text;
+
+                    try
+                    {
+                        temp.ThemDuLieu(value);
+                    }
+                    catch
+                    {
+                        XtraMessageBox.Show("Nhập thiếu!");
+                        return;
+                    }
+
+                    XtraMessageBox.Show("Đã thêm!");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Thêm','" +
                         string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
             }
