@@ -641,6 +641,30 @@ namespace QuanLiKho
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
+                    else if (stateEvent == "NPP")
+                    {
+                        SQL_NPP temp = new SQL_NPP();
+                        EC_tblNPP value = new EC_tblNPP();
+                        value.NPPTen = comNPP.Text;
+
+                        temp.XoaDuLieu(value);
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else if (stateEvent == "Nhom")
+                    {
+                        SQL_Nhom temp = new SQL_Nhom();
+                        EC_tblNhom value = new EC_tblNhom();
+                        value.NTen = comNhom.Text;
+
+                        temp.XoaDuLieu(value);
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
 
                     XtraMessageBox.Show("Đã Xóa!", "Thông báo");
                     Them_Load(sender, e);
@@ -687,6 +711,24 @@ namespace QuanLiKho
 
                         DateTime currentTime = DateTime.Now;
                         con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa Toàn Bộ','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else if (stateEvent == "NPP")
+                    {
+                        con.ThucThiCauLenhSQL("DELETE FROM tblNPP");
+                        MessageBox.Show("Đã Xóa!", "Thông báo");
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa Toàn Bộ','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else if (stateEvent == "Nhom")
+                    {
+                        con.ThucThiCauLenhSQL("DELETE FROM tblNhom");
+                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa Toàn Bộ','" +
                             string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                     }
                 }
@@ -756,6 +798,32 @@ namespace QuanLiKho
                         }
                         else MessageBox.Show("Nhập thiếu!");
                     }
+                    else if (stateEvent == "NPP")
+                    {
+                        if (SaveChane("tblNPP"))
+                        {
+                            XtraMessageBox.Show("Đã sửa");
+                            btnSua.Enabled = false;
+
+                            DateTime currentTime = DateTime.Now;
+                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Cập nhật','" +
+                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                        }
+                        else MessageBox.Show("Nhập thiếu!");
+                    }
+                    else if (stateEvent == "Nhom")
+                    {
+                        if (SaveChane("tblNhom"))
+                        {
+                            XtraMessageBox.Show("Đã sửa");
+                            btnSua.Enabled = false;
+
+                            DateTime currentTime = DateTime.Now;
+                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Cập nhật','" +
+                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                        }
+                        else MessageBox.Show("Nhập thiếu!");
+                    }
                 }
                 else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
                 {
@@ -780,6 +848,13 @@ namespace QuanLiKho
                 {
                     gridControlDL.DataSource = con.GetDataTable("select * from tblKho");
                 }
-
+                else if (stateEvent == "NPP")
+                {
+                    gridControlDL.DataSource = con.GetDataTable("select * from tblNPP");
+                }
+                else if (stateEvent == "Nhom")
+                {
+                    gridControlDL.DataSource = con.GetDataTable("select * from tblNhom");
+                }
                 btnSua.Enabled = true;
             }
