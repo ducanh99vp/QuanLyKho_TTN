@@ -398,5 +398,291 @@ namespace QuanLiKho
             ExportToExcel temp = new ExportToExcel();
             temp.exportFile("*.pdf", gridControlTK);
         }
+        // TAB BAO CAO
+        private void barBtnBaoCao_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            //them tab
+            AddXtraTab(xtraTPBaoCao);
+
+            //hien nhap kho
+            navBarGroup2_ItemChanged(sender, e);
+            gridView12.ActiveFilterString = null;
+
+            //nhat ki 
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Báo Cáo',N'Xem','" +
+                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+        private void navBarGroup1_ItemChanged(object sender, EventArgs e)
+        {
+            DataTable temp = new DataTable();
+            temp = con.GetDataTable("select * from tblHangHoa");
+            gridControlBaoCao.MainView = gridView12;
+            gridControlBaoCao.DataSource = temp;
+
+        }
+        private void navBarGroup2_ItemChanged(object sender, EventArgs e)
+        {
+            gridView12.Columns.Clear();
+
+            gridControlBaoCao.DataSource = con.GetDataTable("select a.HHMa,b.HHTen,c.KTen,d.DVTen,a.NKMa,a.NKNgay,a.NKSL,a.NKGia,a.NKThanhTien,e.NPPTen " +
+                "from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa" +
+                  " join tblKho as c on a.KMa=c.KMa" +
+                " join tblDonVi as d on a.DVMa=d.DVMa join tblNPP as e on a.NPPMa=e.NPPMa");
+
+            stateBC = "NK";
+
+        }
+        private void gridHangHoa_EnabledChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void gridHangHoa_EditValueChanged(object sender, EventArgs e)
+        {
+
+            gridView8.ActiveFilterString = "[HHTen] LIKE '" + gridHangHoa.Text.ToString() + "'";
+        }
+
+        private void gridNPP_EditValueChanged(object sender, EventArgs e)
+        {
+            gridView8.ActiveFilterString = "[NPPTen] LIKE '" + gridNPP.Text.ToString() + "'";
+        }
+
+        private void gridNhom_EditValueChanged(object sender, EventArgs e)
+        {
+            gridView8.ActiveFilterString = "[NTen] LIKE '" + gridNhom.Text.ToString() + "'";
+        }
+
+        private void gridKho_EditValueChanged(object sender, EventArgs e)
+        {
+            gridView8.ActiveFilterString = "[KTen] LIKE '" + gridKho.Text.ToString() + "'";
+        }
+        private void navBarGroup3_ItemChanged(object sender, EventArgs e)
+        {
+            gridView12.Columns.Clear();
+
+            gridControlBaoCao.DataSource = con.GetDataTable("select a.HHMa,b.HHTen,c.KTen,d.DVTen,a.XKMa,a.XKNgay,a.XKSL,a.XKGia,a.XKThanhTien,e.KHTen " +
+                "from tblXuatKho as a join tblHangHoa as b on a.HHMa=b.HHMa" +
+                " join tblKho as c on a.KMa=c.KMa" +
+                " join tblDonVi as d on a.DVMa=d.DVMa join tblKhachHang as e on a.KHMa=e.KHMa");
+
+            stateBC = "XK";
+        }
+
+        private void gridLookUpEdit1_EditValueChanged(object sender, EventArgs e)
+        {
+            if (gridView12.ActiveFilterString != null) gridView12.ActiveFilterString += " and ";
+            gridView12.ActiveFilterString += "[HHTen] LIKE '" + gridHHBC.Text.ToString() + "'";
+        }
+
+        private void dateEditTu_EditValueChanged(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void navNhapTH_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            dateEditDen.Text = "";
+            dateEditTu.Text = "";
+            gridHHBC.Text = "";
+
+            gridView12.ActiveFilterString = null;
+
+        }
+
+        private void navXuatTH_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ActiveFilterString = null;
+            dateEditDen.Text = "";
+            dateEditTu.Text = "";
+            gridHHBC.Text = "";
+        }
+
+        private void dateEditDen_EditValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateEditTu_Leave(object sender, EventArgs e)
+        {
+            if (gridView12.ActiveFilterString != null) gridView12.ActiveFilterString += " and ";
+            if (stateBC == "NK")
+            {
+                //MessageBox.Show("click");
+                if (dateEditTu.Text != "") gridView12.ActiveFilterString += "[NKNgay] >= '" + dateEditTu.Text + "'";
+                else gridView12.ActiveFilterString = null;
+
+                if (dateEditDen.Text != "" && dateEditTu.Text != "")
+                {
+                    if (dateEditTu.DateTime.CompareTo(dateEditDen.DateTime) == 1)
+                    {
+                        XtraMessageBox.Show("Ngày sau không được nhỏ hơn ngày trước", "Thông Báo");
+                        return;
+                    }
+                    else gridView12.ActiveFilterString += "and [NKngay] <= '" + dateEditDen.Text + "'";
+                }
+            }
+
+            if (stateBC == "XK")
+            {
+                if (dateEditTu.Text != "") gridView12.ActiveFilterString += "[XKNgay] >= '" + dateEditTu.Text + "'";
+                else gridView12.ActiveFilterString = null;
+
+                if (dateEditDen.Text != "" && dateEditTu.Text != "")
+                {
+                    if (dateEditTu.DateTime.CompareTo(dateEditDen.DateTime) == 1)
+                    {
+                        XtraMessageBox.Show("Ngày sau không được nhỏ hơn ngày trước", "Thông Báo");
+                        return;
+                    }
+                    else gridView12.ActiveFilterString += "and [XKngay] <= '" + dateEditDen.Text + "'";
+                }
+            }
+        }
+
+        private void dateEditDen_Leave(object sender, EventArgs e)
+        {
+            if (gridView12.ActiveFilterString != null) gridView12.ActiveFilterString += " and ";
+            if (stateBC == "NK")
+            {
+                //MessageBox.Show("click");
+                if (dateEditDen.Text != "") gridView12.ActiveFilterString += "[NKNgay] <= '" + dateEditDen.Text + "'";
+                else gridView12.ActiveFilterString = null;
+
+                if (dateEditTu.Text != "" && dateEditTu.Text != "")
+                {
+                    if (dateEditTu.DateTime.CompareTo(dateEditDen.DateTime) == 1)
+                    {
+                        XtraMessageBox.Show("Ngày sau không được nhỏ hơn ngày trước", "Thông Báo");
+                        return;
+                    }
+                    else gridView12.ActiveFilterString += "and [NKngay] >= '" + dateEditTu.Text + "'";
+                }
+            }
+
+            if (stateBC == "XK")
+            {
+                if (dateEditDen.Text != "") gridView12.ActiveFilterString += "[XKNgay] <= '" + dateEditDen.Text + "'";
+                else gridView12.ActiveFilterString = null;
+
+                if (dateEditTu.Text != "" && dateEditTu.Text != "")
+                {
+                    if (dateEditTu.DateTime.CompareTo(dateEditDen.DateTime) == 1)
+                    {
+                        XtraMessageBox.Show("Ngày sau không được nhỏ hơn ngày trước", "Thông Báo");
+                        return;
+                    }
+                    else gridView12.ActiveFilterString += "and [XKngay] >= '" + dateEditTu.Text + "'";
+                }
+            }
+        }
+
+
+
+        private void navBarItem6_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            AddXtraTab(xtraTPBaoCao);
+            navBarGroup2_ItemChanged(sender, e);
+            navNhapNgay_LinkClicked(sender, e);
+        }
+
+        private void navNhapNgay_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ShowCustomFilterDialog(gridView12.Columns[5]);
+        }
+
+        private void navBarItem7_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            AddXtraTab(xtraTPBaoCao);
+            navBarGroup2_ItemChanged(sender, e);
+            navNhapHH_LinkClicked(sender, e);
+        }
+
+        private void navNhapHH_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ShowCustomFilterDialog(gridView12.Columns[1]);
+        }
+
+        private void navBarItem11_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            AddXtraTab(xtraTPBaoCao);
+            navBarGroup3_ItemChanged(sender, e);
+            navXuatNgay_LinkClicked(sender, e);
+        }
+
+        private void navXuatNgay_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ShowCustomFilterDialog(gridView12.Columns[5]);
+        }
+
+        private void navBarItem12_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            AddXtraTab(xtraTPBaoCao);
+            navBarGroup3_ItemChanged(sender, e);
+            navXuatHH_LinkClicked(sender, e);
+        }
+
+        private void navXuatHH_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ShowCustomFilterDialog(gridView12.Columns[1]);
+        }
+        private void simpleButton5_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.pdf", gridControlBaoCao);
+        }
+
+        private void simpleButton10_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.xls", gridControlBaoCao);
+        }
+        private void btnThemKK_Click(object sender, EventArgs e)
+        {
+            DialogResult temp = XtraMessageBox.Show("Bạn có muốn cập nhật lại số lượng Hàng Hóa?", "Thông Báo", MessageBoxButtons.YesNo);
+            if (SaveChane("tblKiemKeTemp"))
+            {
+                XtraMessageBox.Show("Đã lưu!", "Thông Báo");
+
+                con.ThucThiCauLenhSQL("insert into tblKiemKe(KKMa, KKNgay, HHMa, HHTen, NMa, KMa, KKNguoi, KKSL, HHSL) select KKMa, KKNgay, HHMa, HHTen, NMa, KMa, KKNguoi, KKSL, HHSL from tblKiemKeTemp");
+
+                //btnRefeshXK_Click(sender, e);
+            }
+            if (temp == DialogResult.Yes)
+            {
+                DataTable temp1 = con.GetDataTable("select * from tblKiemKeTemp");
+
+                for (int i = 0; i < temp1.Rows.Count; i++)
+                {
+                    //XtraMessageBox.Show(temp1.Rows[i][2].ToString() + temp1.Rows[i][7].ToString());
+                    con.ThucThiCauLenhSQL("update tblHangHoa set HHTonHienTai=" + temp1.Rows[i][7].ToString() + " where HHMa='" + temp1.Rows[i][2].ToString() + "'");
+                }
+            }
+            else
+            {
+
+            }
+            con.ThucThiCauLenhSQL("delete from tblKiemKeTemp");
+
+        }
+
+        private void navBarItem16_LinkClicked(object sender, DevExpress.XtraNavBar.NavBarLinkEventArgs e)
+        {
+            gridView12.ActiveFilterString = null;
+            dateEditDen.Dispose();
+            dateEditTu.Dispose();
+            gridHHBC.Text = "";
+        }
+
+        private void navBarGroup1_ItemChanged_1(object sender, EventArgs e)
+        {
+            gridView12.Columns.Clear();
+
+            gridControlBaoCao.DataSource = con.GetDataTable("select * from tblKiemKe");
+
+            stateBC = "KK";
+        }
     }
 }
