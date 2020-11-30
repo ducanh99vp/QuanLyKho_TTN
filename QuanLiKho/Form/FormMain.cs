@@ -479,6 +479,46 @@ namespace QuanLiKho
             chartNK.DataSource = con.GetDataTable(cmdTime);
             //MessageBox.Show(start+end);
         }
+        private void comboxDateXK_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gridHHXK.Text = "";
+
+            if (comboxDateXK.SelectedIndex == 0)
+            {
+                dateState = "tuan";
+                btnNowXK.Text = "Tuần Này";
+                btnYesterXK.Text = "Tuần Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+            if (comboxDateXK.SelectedIndex == 1)
+            {
+                dateState = "thang";
+                btnNowXK.Text = "Tháng Này";
+                btnYesterXK.Text = "Tháng Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+            if (comboxDateXK.SelectedIndex == 2)
+            {
+                dateState = "quy";
+                btnNowXK.Text = "Quý Này";
+                btnYesterXK.Text = "Quý Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+        }
+
+        private void gridHHXK_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string temp = cmdTime1;
+            if (gridHHXK.Text != null)
+            {
+                temp += " and HHTen=N'" + gridHH.Text + "'";
+            }
+            else temp = cmdTime1;
+            chartXK.DataSource = con.GetDataTable(temp);
+        }
 
     }
 }
