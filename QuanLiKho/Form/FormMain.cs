@@ -410,6 +410,75 @@ namespace QuanLiKho
 
             //MessageBox.Show(start+end);
         }
+        private void gridHH_EditValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void gridHH_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string temp = cmdTime;
+            if (gridHH.Text != null)
+            {
+                temp += " and HHTen=N'" + gridHH.Text + "'";
+            }
+            else temp = cmdTime;
+            chartNK.DataSource = con.GetDataTable(temp);
+
+
+        }
+
+        private void btnRight_Click(object sender, EventArgs e)
+        {
+            DateTime temp = new DateTime();
+            temp = Convert.ToDateTime(end);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(7);
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(3);
+            }
+
+            end = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+            //MessageBox.Show(start+end);
+        }
+
+        private void btnLeft_Click(object sender, EventArgs e)
+        {
+            DateTime temp = Convert.ToDateTime(start);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(-7);
+
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(-1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(-3);
+            }
+
+            start = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+            //MessageBox.Show(start+end);
+        }
 
     }
 }
