@@ -858,3 +858,104 @@ namespace QuanLiKho
                 }
                 btnSua.Enabled = true;
             }
+            private bool SaveChane(string cmd)
+            {
+                gridControlDL.Refresh();
+                bool res = false;
+                SqlDataAdapter sql = con.GetCmd("select * from " + cmd);
+                try
+                {
+                    DataTable temp = gridControlDL.DataSource as DataTable;
+                    sql.Update(temp.GetChanges());  //luu tat ca nhung thay doi
+                    res = true;
+                }
+                catch (Exception e)
+                {
+                    XtraMessageBox.Show(e.Message);
+                    res = false;
+                }
+                finally
+                {
+                    con.DongKetNoiMetho();
+                }
+
+                return res;
+            }
+
+            private void simpleButton1_Click(object sender, EventArgs e)
+            {
+                Them temp = new Them("NPP");
+                temp.ShowDialog();
+                Them_Load(sender, e);
+            }
+
+            private void simpleButton3_Click(object sender, EventArgs e)
+            {
+                Them temp = new Them("Kho");
+                temp.ShowDialog();
+                Them_Load(sender, e);
+            }
+
+            private void simpleButton2_Click(object sender, EventArgs e)
+            {
+                Them temp = new Them("Nhom");
+                temp.ShowDialog();
+                Them_Load(sender, e);
+            }
+
+            private void simpleButton4_Click(object sender, EventArgs e)
+            {
+                Them temp = new Them("DonVi");
+                temp.ShowDialog();
+                Them_Load(sender, e);
+            }
+
+
+            private void initPQ()
+            {
+                //lay user hien tai
+                string user = con.GetValue("select name from tblLuuMK where num='1'", 0);
+                //phan quyen
+                DataTable temp = con.GetDataTable("select * from PhanQuyen where Username like '" + user + "'");
+
+                if (temp.Rows[0][2].ToString().Trim() == "False")
+                {
+                    btnThem.Enabled = false;
+                }
+
+                if (temp.Rows[0][4].ToString().Trim() == "False")
+                {
+                    btnSua.Enabled = false;
+                }
+
+                if (temp.Rows[0][5].ToString().Trim() == "False")
+                {
+                    btnXoa.Enabled = false;
+                    btnXoaToanBo.Enabled = false;
+                }
+            }
+
+            private void simpleButton10_Click(object sender, EventArgs e)
+            {
+                ExportToExcel temp = new ExportToExcel();
+                temp.exportFile("*.xls", gridControlDL);
+            }
+
+            private void simpleButton5_Click(object sender, EventArgs e)
+            {
+                ExportToExcel temp = new ExportToExcel();
+                temp.exportFile("*.pdf", gridControlDL);
+            }
+
+            private void gridView6_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+            {
+
+            }
+
+            private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+            {
+
+            }
+        }
+    }
+}
