@@ -1663,5 +1663,430 @@ namespace QuanLiKho
 
         }
 
+        // TAB TỔNG HỢP KHO
+        private void barbtnTHK_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            AddXtraTab(BDXK);
+            gridHH.Text = "";
+            gridHHXK.Text = "";
+
+            btnNow_Click(sender, e);
+            btnNowXK_Click(sender, e);
+            //chartTK.DataSource = con.GetDataTable("select HHTen,HHSL from tblHangHoa");
+
+            //nhat ki 
+            DateTime currentTime = DateTime.Now;
+            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Tổng Hợp Kho',N'Xem','" +
+                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser.Text + "')");
+        }
+        private void btnNow_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan nay
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                if (tempTime.Month < 4)
+                {
+                    start = tempTime.Year + "/1/1";
+                    end = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start = tempTime.Year + "/4/1";
+                    end = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start = tempTime.Year + "/7/1";
+                    end = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start = tempTime.Year + "/10/1";
+                    end = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+
+            //MessageBox.Show(start+end);
+        }
+        private void comboxDate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gridHH.Text = "";
+
+            if (comboxDate.SelectedIndex == 0)
+            {
+                dateState = "tuan";
+                btnNow.Text = "Tuần Này";
+                btnYester.Text = "Tuần Trước";
+
+                btnNow_Click(sender, e);
+            }
+            if (comboxDate.SelectedIndex == 1)
+            {
+                dateState = "thang";
+                btnNow.Text = "Tháng Này";
+                btnYester.Text = "Tháng Trước";
+
+                btnNow_Click(sender, e);
+            }
+            if (comboxDate.SelectedIndex == 2)
+            {
+                dateState = "quy";
+                btnNow.Text = "Quý Này";
+                btnYester.Text = "Quý Trước";
+
+                btnNow_Click(sender, e);
+            }
+        }
+
+        private void btnYester_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan truoc
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+            tempTime = tempTime.AddDays(-7);
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                tempTime = tempTime.AddMonths(-1);
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                tempTime = tempTime.AddMonths(-3);
+                if (tempTime.Month < 4)
+                {
+                    start = tempTime.Year + "/1/1";
+                    end = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start = tempTime.Year + "/4/1";
+                    end = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start = tempTime.Year + "/7/1";
+                    end = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start = tempTime.Year + "/10/1";
+                    end = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+
+            //MessageBox.Show(start+end);
+        }
+        private void gridHH_EditValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void gridHH_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string temp = cmdTime;
+            if (gridHH.Text != null)
+            {
+                temp += " and HHTen=N'" + gridHH.Text + "'";
+            }
+            else temp = cmdTime;
+            chartNK.DataSource = con.GetDataTable(temp);
+
+
+        }
+
+        private void btnRight_Click(object sender, EventArgs e)
+        {
+            DateTime temp = new DateTime();
+            temp = Convert.ToDateTime(end);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(7);
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(3);
+            }
+
+            end = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+            //MessageBox.Show(start+end);
+        }
+
+        private void btnLeft_Click(object sender, EventArgs e)
+        {
+            DateTime temp = Convert.ToDateTime(start);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(-7);
+
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(-1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(-3);
+            }
+
+            start = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime = "select HHTen,NKSL,NKNgay from tblNhapKho as a join tblHangHoa as b on a.HHMa=b.HHMa where NKNgay>= '" + start + "' and NKNgay<= '" + end + "'";
+            chartNK.DataSource = con.GetDataTable(cmdTime);
+            //MessageBox.Show(start+end);
+        }
+        private void comboxDateXK_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            gridHHXK.Text = "";
+
+            if (comboxDateXK.SelectedIndex == 0)
+            {
+                dateState = "tuan";
+                btnNowXK.Text = "Tuần Này";
+                btnYesterXK.Text = "Tuần Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+            if (comboxDateXK.SelectedIndex == 1)
+            {
+                dateState = "thang";
+                btnNowXK.Text = "Tháng Này";
+                btnYesterXK.Text = "Tháng Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+            if (comboxDateXK.SelectedIndex == 2)
+            {
+                dateState = "quy";
+                btnNowXK.Text = "Quý Này";
+                btnYesterXK.Text = "Quý Trước";
+
+                btnNowXK_Click(sender, e);
+            }
+        }
+
+        private void gridHHXK_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string temp = cmdTime1;
+            if (gridHHXK.Text != null)
+            {
+                temp += " and HHTen=N'" + gridHH.Text + "'";
+            }
+            else temp = cmdTime1;
+            chartXK.DataSource = con.GetDataTable(temp);
+        }
+        private void btnNowXK_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan nay
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start1 = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end1 = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start1 = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end1 = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                if (tempTime.Month < 4)
+                {
+                    start1 = tempTime.Year + "/1/1";
+                    end1 = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start1 = tempTime.Year + "/4/1";
+                    end1 = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start1 = tempTime.Year + "/7/1";
+                    end1 = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start1 = tempTime.Year + "/10/1";
+                    end1 = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime1 = "select HHTen,XKSL,XKNgay from tblXuatKho as a join tblHangHoa as b on a.HHMa=b.HHMa where XKNgay>= '" + start1 + "' and XKNgay<= '" + end1 + "'";
+            chartXK.DataSource = con.GetDataTable(cmdTime1);
+
+            //MessageBox.Show(start+end);
+        }
+
+        private void btnYesterXK_Click(object sender, EventArgs e)
+        {
+            //thu 2 tuan truoc
+            DateTime tempTime = new DateTime();
+            tempTime = DateTime.Now.Date;
+            tempTime = tempTime.AddDays(-7);
+
+            if (dateState == "tuan")
+            {
+                while (tempTime.DayOfWeek != DayOfWeek.Monday) tempTime = tempTime.AddDays(-1);
+
+                start1 = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end1 = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(6));
+
+            }
+            if (dateState == "thang")
+            {
+                tempTime = tempTime.AddMonths(-1);
+                while (tempTime.Day > 1) tempTime = tempTime.AddDays(-1);
+
+                start1 = string.Format("{0:yyyy/MM/dd}", tempTime);
+                end1 = string.Format("{0:yyyy/MM/dd}", tempTime.AddDays(DateTime.DaysInMonth(tempTime.Year, tempTime.Month) - 1));
+
+            }
+
+            if (dateState == "quy")
+            {
+                tempTime = tempTime.AddMonths(-3);
+                if (tempTime.Month < 4)
+                {
+                    start1 = tempTime.Year + "/1/1";
+                    end1 = tempTime.Year + "/3/31";
+                }
+                if (tempTime.Month >= 4 && tempTime.Month < 7)
+                {
+                    start1 = tempTime.Year + "/4/1";
+                    end1 = tempTime.Year + "/6/30";
+                }
+                if (tempTime.Month >= 7 && tempTime.Month < 10)
+                {
+                    start1 = tempTime.Year + "/7/1";
+                    end1 = tempTime.Year + "/9/30";
+                }
+                if (tempTime.Month >= 10 && tempTime.Month < 13)
+                {
+                    start1 = tempTime.Year + "/10/1";
+                    end1 = tempTime.Year + "/12/31";
+                }
+            }
+
+            cmdTime1 = "select HHTen,XKSL,xKNgay from tblXuatKho as a join tblHangHoa as b on a.HHMa=b.HHMa where XKNgay>= '" + start1 + "' and XKNgay<= '" + end1 + "'";
+            chartXK.DataSource = con.GetDataTable(cmdTime1);
+
+            //MessageBox.Show(start+end);
+        }
+
+        private void btnRightXK_Click(object sender, EventArgs e)
+        {
+            DateTime temp = new DateTime();
+            temp = Convert.ToDateTime(end1);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(7);
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(3);
+            }
+
+            end1 = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime1 = "select HHTen,XKSL,XKNgay from tblXuatKho as a join tblHangHoa as b on a.HHMa=b.HHMa where XKNgay>= '" + start1 + "' and XKNgay<= '" + end1 + "'";
+            chartXK.DataSource = con.GetDataTable(cmdTime1);
+            //MessageBox.Show(start+end);
+        }
+
+        private void btnLeftXK_Click(object sender, EventArgs e)
+        {
+            DateTime temp = Convert.ToDateTime(start1);
+
+            if (dateState == "tuan")
+            {
+                temp = temp.AddDays(-7);
+
+            }
+            if (dateState == "thang")
+            {
+                temp = temp.AddMonths(-1);
+
+            }
+
+            if (dateState == "quy")
+            {
+                temp = temp.AddMonths(-3);
+            }
+
+            start1 = string.Format("{0:yyyy/MM/dd}", temp);
+            cmdTime1 = "select HHTen,XKSL,XKNgay from tblXuatKho as a join tblHangHoa as b on a.HHMa=b.HHMa where XKNgay>= '" + start1 + "' and XKNgay<= '" + end1 + "'";
+            chartXK.DataSource = con.GetDataTable(cmdTime1);
+            //MessageBox.Show(start+end);
+        }
+
     }
 }
