@@ -150,11 +150,28 @@
     <Compile Include="Form\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\TaoCSDL.cs" />
+    <Compile Include="Form\TaoCSDL.Designer.cs">
+      <DependentUpon>TaoCSDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Script\Helper\ExportToExcel.cs" />
+    <Compile Include="Script\Helper\KetNoiCSDL.cs" />
+    <Compile Include="Script\QuanLiKhoEntity.cs" />
+    <Compile Include="Script\SQL_Kho.cs" />
+    <Compile Include="Script\SQL_Nhom.cs" />
+    <Compile Include="Script\SQL_NPP.cs" />
+    <Compile Include="Script\SQL_tblDonVi.cs" />
+    <Compile Include="Script\SQL_tblHangHoa.cs" />
+    <Compile Include="Script\SQL_tblKhachHang.cs" />
+    <Compile Include="Script\SQL_tblXuatKho.cs" />
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Form\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\TaoCSDL.resx">
+      <DependentUpon>TaoCSDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
