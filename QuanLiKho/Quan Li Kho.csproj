@@ -168,9 +168,15 @@
     <Compile Include="Form\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Form\TaoCSDL.cs" />
     <Compile Include="Form\TaoCSDL.Designer.cs">
       <DependentUpon>TaoCSDL.cs</DependentUpon>
+=======
+    <Compile Include="Form\Them.cs" />
+    <Compile Include="Form\Them.Designer.cs">
+      <DependentUpon>Them.cs</DependentUpon>
+>>>>>>> origin/TQ_Them
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -196,8 +202,13 @@
     <EmbeddedResource Include="Form\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Form\TaoCSDL.resx">
       <DependentUpon>TaoCSDL.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="Form\Them.resx">
+      <DependentUpon>Them.cs</DependentUpon>
+>>>>>>> origin/TQ_Them
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
