@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DevExpress.XtraBars;
 using System.Data.SqlClient;
 using DevExpress.XtraEditors;
+
 namespace QuanLiKho
 {
     public partial class Them : DevExpress.XtraBars.Ribbon.RibbonForm
@@ -17,13 +18,23 @@ namespace QuanLiKho
         private KetNoiCSDL con = new KetNoiCSDL();
 
         private string stateEvent;
+
+
+        //name ủe
         private string lbNameUser = "Quyền ";
+
         public Them()
         {
             InitializeComponent();
+
             lbNameUser += con.GetValue("select name from tblLuuMK where num='1'", 0);
+        }
+
+        private void Them_Load(object sender, EventArgs e)
+        {
 
         }
+
         public Them(string strInit)
         {
             InitializeComponent();
@@ -32,6 +43,7 @@ namespace QuanLiKho
             init(strInit);
             initPQ();
         }
+
         private void init(string state)
         {
             //ban dau
@@ -45,6 +57,9 @@ namespace QuanLiKho
 
             txtMa.ReadOnly = true;
             //thiet lap 
+
+
+
             if (state == "HangHoa")
             {
                 lbMa.Text = "Mã Hàng Hóa";
@@ -114,6 +129,7 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "HH0001";
             }
+
             if (state == "DonVi")
             {
                 lbMa.Text = "Mã Đơn vị";
@@ -163,6 +179,7 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "DV0001";
             }
+
             if (state == "KhachHang")
             {
                 lbMa.Text = "Mã Khách Hàng";
@@ -209,6 +226,8 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "KH0001";
             }
+
+
             if (state == "Kho")
             {
                 lbTen.Text = "Tên Kho";
@@ -256,6 +275,8 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "K0001";
             }
+
+
             if (state == "Nhom")
             {
                 lbMa.Text = "Mã Nhóm";
@@ -356,10 +377,8 @@ namespace QuanLiKho
                 }
                 else txtMa.Text = "NPP0001";
             }
-
-
-
         }
+
         private void XtraTabMain_Click(object sender, EventArgs e)
         {
             //thiet lap ban dau
@@ -394,568 +413,580 @@ namespace QuanLiKho
                 btnSua.Enabled = true;
             }
             //=====================================================
-            private void btnThem_ItemClick(object sender, ItemClickEventArgs e)
+        }
+
+        private void btnThem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ThemDL(stateEvent);
+            this.Dispose();
+        }
+
+        private void ThemDL(string state)
+        {
+            if (state == "HangHoa")
             {
-                ThemDL(stateEvent);
-                this.Dispose();
-            }
-            private void ThemDL(string state)
-            {
-                if (state == "HangHoa")
+                SQL_tblHangHoa temp = new SQL_tblHangHoa();
+                EC_tblHangHoa value = new EC_tblHangHoa();
+
+                value.HHMa = txtMa.Text;
+                value.HHTen = txtTen.Text;
+                txtSoLuong.Text = "0";
+                value.HHGia = txtGia.Text;
+                value.HHTonHienTai = txtSoLuong.Text;
+                try
                 {
-                    SQL_tblHangHoa temp = new SQL_tblHangHoa();
-                    EC_tblHangHoa value = new EC_tblHangHoa();
-
-                    value.HHMa = txtMa.Text;
-                    value.HHTen = txtTen.Text;
-                    txtSoLuong.Text = "0";
-                    value.HHGia = txtGia.Text;
-                    value.HHTonHienTai = txtSoLuong.Text;
-                    try
-                    {
-                        value.KMa = con.GetValue("select KMa from tblKho where KTen like N'" + gridlookKho.Text + "'", 0);
-                        value.NMa = con.GetValue("select NMa from tblNhom where NTen like N'" + gridlookNhom.Text + "'", 0);
-                        value.DVMa = con.GetValue("select DVMa from tblDonVi where DVTen like N'" + gridlookDonVi.Text + "'", 0);
-                        value.NPPMa = con.GetValue("select NPPMa from tblNPP where NPPTen like N'" + gridlookNPP.Text + "'", 0);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                    }
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu hoặc Mã bị trùng");
-                        return;
-                    }
-
-                    XtraMessageBox.Show("Đã Thêm!");
-                    DateTime currentTime = DateTime.Now;
-                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Thêm','" +
-                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    value.KMa = con.GetValue("select KMa from tblKho where KTen like N'" + gridlookKho.Text + "'", 0);
+                    value.NMa = con.GetValue("select NMa from tblNhom where NTen like N'" + gridlookNhom.Text + "'", 0);
+                    value.DVMa = con.GetValue("select DVMa from tblDonVi where DVTen like N'" + gridlookDonVi.Text + "'", 0);
+                    value.NPPMa = con.GetValue("select NPPMa from tblNPP where NPPTen like N'" + gridlookNPP.Text + "'", 0);
                 }
-                else if (state == "DonVi")
+                catch
                 {
-                    SQL_tblDonVi temp = new SQL_tblDonVi();
-                    EC_tblDonVi value = new EC_tblDonVi();
-
-                    value.DVMa = txtMa.Text;
-                    value.DVTen = txtTen.Text;
-                    value.DVGhiChu = txtSoLuong.Text;
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                        return;
-                    }
-                    XtraMessageBox.Show("Đã thêm!");
-                    DateTime currentTime = DateTime.Now;
-
+                    XtraMessageBox.Show("Nhập thiếu!");
                 }
-                else if (state == "KhachHang")
+
+                try
                 {
-                    SQL_tblKhachHang temp = new SQL_tblKhachHang();
-                    EC_tblKhachHang value = new EC_tblKhachHang();
-
-                    value.KHMa = txtMa.Text;
-                    value.KHTen = txtTen.Text;
-                    value.KHDiaChi = txtSoLuong.Text;
-                    value.KHDienThoai = txtGia.Text;
-                    value.KHMaSoThue = txtGhiChu.Text;
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                        return;
-                    }
-
-                    XtraMessageBox.Show("Đã thêm");
-
-                    DateTime currentTime = DateTime.Now;
-                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Thêm','" +
-                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-
+                    temp.ThemDuLieu(value);
                 }
-                else if (state == "Kho")
+                catch
                 {
-                    SQL_Kho temp = new SQL_Kho();
-                    EC_tblKho value = new EC_tblKho();
-
-                    value.KMa = txtMa.Text;
-                    value.KTen = txtTen.Text;
-                    value.KNguoiLienHe = value.KNguoiQuanLi = txtSoLuong.Text;
-                    value.KDiaChi = txtGia.Text;
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                        return;
-                    }
-                    XtraMessageBox.Show("Đã thêm!");
-
-                    DateTime currentTime = DateTime.Now;
-                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Thêm','" +
-                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                }
-                else if (state == "Nhom")
-                {
-                    SQL_Nhom temp = new SQL_Nhom();
-                    EC_tblNhom value = new EC_tblNhom();
-
-                    value.NMa = txtMa.Text;
-                    value.NTen = txtTen.Text;
-                    value.NGhiChu = txtSoLuong.Text;
-                    try
-                    {
-                        value.KMa = con.GetValue("select KMa from tblKho where KTen like N'" + gridlookKho.Text + "'", 0);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                    }
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu");
-
-                        return;
-                    }
-
-                    XtraMessageBox.Show("Đã thêm!");
-
-                    DateTime currentTime = DateTime.Now;
-                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Thêm','" +
-                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                }
-                else if (state == "NPP")
-                {
-                    SQL_NPP temp = new SQL_NPP();
-                    EC_tblNPP value = new EC_tblNPP();
-
-                    value.NPPMa = txtMa.Text;
-                    value.NPPTen = txtTen.Text;
-                    value.NPPDiaChi = txtSoLuong.Text;
-                    value.NPPMaSoThue = txtGhiChu.Text;
-                    value.DienThoai = txtGia.Text;
-
-                    try
-                    {
-                        temp.ThemDuLieu(value);
-                    }
-                    catch
-                    {
-                        XtraMessageBox.Show("Nhập thiếu!");
-                        return;
-                    }
-
-                    XtraMessageBox.Show("Đã thêm!");
-
-                    DateTime currentTime = DateTime.Now;
-                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Thêm','" +
-                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                }
-            }
-            private void btnCancel_ItemClick(object sender, ItemClickEventArgs e)
-            {
-                txtGhiChu.Text = "";
-                txtGia.Text = "";
-                txtMa.Text = "";
-                txtSoLuong.Text = "";
-                txtTen.Text = "";
-
-                gridlookDonVi.EditValue = "";
-                gridlookKho.EditValue = "";
-                gridlookNhom.EditValue = "";
-                gridlookNPP.EditValue = "";
-            }
-            private void btnXoa_ItemClick(object sender, ItemClickEventArgs e)
-            {
-                if (comDonVi.Text != "" || comHangHoa.Text != "" || comKH.Text != "" || comKho.Text != "" || comNhom.Text != "" || comNPP.Text != "")
-                {
-                    if (stateEvent == "HangHoa")
-                    {
-                        SQL_tblHangHoa temp = new SQL_tblHangHoa();
-                        EC_tblHangHoa value = new EC_tblHangHoa();
-                        value.HHMa = con.GetValue("select HHMa from tblHangHoa where HHTen like N'" + comHangHoa.Text + "'", 0);
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "DonVi")
-                    {
-                        SQL_tblDonVi temp = new SQL_tblDonVi();
-                        EC_tblDonVi value = new EC_tblDonVi();
-                        value.DVTen = comDonVi.Text;
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "KhachHang")
-                    {
-                        SQL_tblKhachHang temp = new SQL_tblKhachHang();
-                        EC_tblKhachHang value = new EC_tblKhachHang();
-                        value.KHTen = comKH.Text;
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "Kho")
-                    {
-                        SQL_Kho temp = new SQL_Kho();
-                        EC_tblKho value = new EC_tblKho();
-                        value.KTen = comKho.Text;
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "NPP")
-                    {
-                        SQL_NPP temp = new SQL_NPP();
-                        EC_tblNPP value = new EC_tblNPP();
-                        value.NPPTen = comNPP.Text;
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "Nhom")
-                    {
-                        SQL_Nhom temp = new SQL_Nhom();
-                        EC_tblNhom value = new EC_tblNhom();
-                        value.NTen = comNhom.Text;
-
-                        temp.XoaDuLieu(value);
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-
-                    XtraMessageBox.Show("Đã Xóa!", "Thông báo");
-                    Them_Load(sender, e);
-                }
-                else MessageBox.Show("Chưa chọn", "Thông báo");
-            }
-            private void btnXoaToanBo_ItemClick(object sender, ItemClickEventArgs e)
-            {
-                DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn xóa hết dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
-
-                if (LuaChon == DialogResult.Yes)
-                {
-                    if (stateEvent == "HangHoa")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblHangHoa");
-                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "DonVi")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblDonVi");
-                        MessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "KhachHang")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblKhachHang");
-                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "Kho")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblKho");
-                        MessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "NPP")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblNPP");
-                        MessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                    else if (stateEvent == "Nhom")
-                    {
-                        con.ThucThiCauLenhSQL("DELETE FROM tblNhom");
-                        XtraMessageBox.Show("Đã Xóa!", "Thông báo");
-
-                        DateTime currentTime = DateTime.Now;
-                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa Toàn Bộ','" +
-                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                    }
-                }
-                else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
-                {
+                    XtraMessageBox.Show("Nhập thiếu hoặc Mã bị trùng");
                     return;
                 }
 
+                XtraMessageBox.Show("Đã Thêm!");
+                DateTime currentTime = DateTime.Now;
+                con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Thêm','" +
+                    string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
             }
-            private void btnSua_ItemClick(object sender, ItemClickEventArgs e)
+            else if (state == "DonVi")
             {
-                gridView6.ResetCursor();
-                DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn sửa dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
+                SQL_tblDonVi temp = new SQL_tblDonVi();
+                EC_tblDonVi value = new EC_tblDonVi();
 
-                if (LuaChon == DialogResult.Yes)
+                value.DVMa = txtMa.Text;
+                value.DVTen = txtTen.Text;
+                value.DVGhiChu = txtSoLuong.Text;
+
+                try
                 {
-                    if (stateEvent == "HangHoa")
-                    {
-                        if (SaveChane("tblHangHoa"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-
-                    }
-                    else if (stateEvent == "DonVi")
-                    {
-                        if (SaveChane("tblDonVi"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-                    }
-                    else if (stateEvent == "KhachHang")
-                    {
-                        if (SaveChane("tblKhachHang"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-                    }
-                    else if (stateEvent == "Kho")
-                    {
-                        if (SaveChane("tblKho"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-                    }
-                    else if (stateEvent == "NPP")
-                    {
-                        if (SaveChane("tblNPP"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-                    }
-                    else if (stateEvent == "Nhom")
-                    {
-                        if (SaveChane("tblNhom"))
-                        {
-                            XtraMessageBox.Show("Đã sửa");
-                            btnSua.Enabled = false;
-
-                            DateTime currentTime = DateTime.Now;
-                            con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Cập nhật','" +
-                                string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
-                        }
-                        else MessageBox.Show("Nhập thiếu!");
-                    }
+                    temp.ThemDuLieu(value);
                 }
-                else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
+                catch
                 {
+                    XtraMessageBox.Show("Nhập thiếu!");
                     return;
                 }
+                XtraMessageBox.Show("Đã thêm!");
+                DateTime currentTime = DateTime.Now;
+
             }
-            private void btnCapNhat_ItemClick(object sender, ItemClickEventArgs e)
+            else if (state == "KhachHang")
+            {
+                SQL_tblKhachHang temp = new SQL_tblKhachHang();
+                EC_tblKhachHang value = new EC_tblKhachHang();
+
+                value.KHMa = txtMa.Text;
+                value.KHTen = txtTen.Text;
+                value.KHDiaChi = txtSoLuong.Text;
+                value.KHDienThoai = txtGia.Text;
+                value.KHMaSoThue = txtGhiChu.Text;
+
+                try
+                {
+                    temp.ThemDuLieu(value);
+
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Nhập thiếu!");
+                    return;
+                }
+
+                XtraMessageBox.Show("Đã thêm");
+
+                DateTime currentTime = DateTime.Now;
+                con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Thêm','" +
+                    string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+
+            }
+            else if (state == "Kho")
+            {
+                SQL_Kho temp = new SQL_Kho();
+                EC_tblKho value = new EC_tblKho();
+
+                value.KMa = txtMa.Text;
+                value.KTen = txtTen.Text;
+                value.KNguoiLienHe = value.KNguoiQuanLi = txtSoLuong.Text;
+                value.KDiaChi = txtGia.Text;
+
+                try
+                {
+                    temp.ThemDuLieu(value);
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Nhập thiếu!");
+                    return;
+                }
+                XtraMessageBox.Show("Đã thêm!");
+
+                DateTime currentTime = DateTime.Now;
+                con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Thêm','" +
+                    string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+            }
+            else if (state == "Nhom")
+            {
+                SQL_Nhom temp = new SQL_Nhom();
+                EC_tblNhom value = new EC_tblNhom();
+
+                value.NMa = txtMa.Text;
+                value.NTen = txtTen.Text;
+                value.NGhiChu = txtSoLuong.Text;
+                try
+                {
+                    value.KMa = con.GetValue("select KMa from tblKho where KTen like N'" + gridlookKho.Text + "'", 0);
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Nhập thiếu!");
+                }
+
+                try
+                {
+                    temp.ThemDuLieu(value);
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Nhập thiếu");
+
+                    return;
+                }
+
+                XtraMessageBox.Show("Đã thêm!");
+
+                DateTime currentTime = DateTime.Now;
+                con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Thêm','" +
+                    string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+            }
+            else if (state == "NPP")
+            {
+                SQL_NPP temp = new SQL_NPP();
+                EC_tblNPP value = new EC_tblNPP();
+
+                value.NPPMa = txtMa.Text;
+                value.NPPTen = txtTen.Text;
+                value.NPPDiaChi = txtSoLuong.Text;
+                value.NPPMaSoThue = txtGhiChu.Text;
+                value.DienThoai = txtGia.Text;
+
+                try
+                {
+                    temp.ThemDuLieu(value);
+                }
+                catch
+                {
+                    XtraMessageBox.Show("Nhập thiếu!");
+                    return;
+                }
+
+                XtraMessageBox.Show("Đã thêm!");
+
+                DateTime currentTime = DateTime.Now;
+                con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Thêm','" +
+                    string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+            }
+
+        }
+
+        private void btnCancel_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            txtGhiChu.Text = "";
+            txtGia.Text = "";
+            txtMa.Text = "";
+            txtSoLuong.Text = "";
+            txtTen.Text = "";
+
+            gridlookDonVi.EditValue = "";
+            gridlookKho.EditValue = "";
+            gridlookNhom.EditValue = "";
+            gridlookNPP.EditValue = "";
+        }
+
+        private void btnXoa_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (comDonVi.Text != "" || comHangHoa.Text != "" || comKH.Text != "" || comKho.Text != "" || comNhom.Text != "" || comNPP.Text != "")
             {
                 if (stateEvent == "HangHoa")
                 {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblHangHoa");
+                    SQL_tblHangHoa temp = new SQL_tblHangHoa();
+                    EC_tblHangHoa value = new EC_tblHangHoa();
+                    value.HHMa = con.GetValue("select HHMa from tblHangHoa where HHTen like N'" + comHangHoa.Text + "'", 0);
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
                 else if (stateEvent == "DonVi")
                 {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblDonVi");
+                    SQL_tblDonVi temp = new SQL_tblDonVi();
+                    EC_tblDonVi value = new EC_tblDonVi();
+                    value.DVTen = comDonVi.Text;
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
                 else if (stateEvent == "KhachHang")
                 {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblKhachHang");
-                }
-                else if (stateEvent == "Kho")
-                {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblKho");
+                    SQL_tblKhachHang temp = new SQL_tblKhachHang();
+                    EC_tblKhachHang value = new EC_tblKhachHang();
+                    value.KHTen = comKH.Text;
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
                 else if (stateEvent == "NPP")
                 {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblNPP");
+                    SQL_NPP temp = new SQL_NPP();
+                    EC_tblNPP value = new EC_tblNPP();
+                    value.NPPTen = comNPP.Text;
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
                 else if (stateEvent == "Nhom")
                 {
-                    gridControlDL.DataSource = con.GetDataTable("select * from tblNhom");
+                    SQL_Nhom temp = new SQL_Nhom();
+                    EC_tblNhom value = new EC_tblNhom();
+                    value.NTen = comNhom.Text;
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
-                btnSua.Enabled = true;
-            }
-            private bool SaveChane(string cmd)
-            {
-                gridControlDL.Refresh();
-                bool res = false;
-                SqlDataAdapter sql = con.GetCmd("select * from " + cmd);
-                try
+                else if (stateEvent == "Kho")
                 {
-                    DataTable temp = gridControlDL.DataSource as DataTable;
-                    sql.Update(temp.GetChanges());  //luu tat ca nhung thay doi
-                    res = true;
-                }
-                catch (Exception e)
-                {
-                    XtraMessageBox.Show(e.Message);
-                    res = false;
-                }
-                finally
-                {
-                    con.DongKetNoiMetho();
+                    SQL_Kho temp = new SQL_Kho();
+                    EC_tblKho value = new EC_tblKho();
+                    value.KTen = comKho.Text;
+
+                    temp.XoaDuLieu(value);
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
 
-                return res;
-            }
-
-            private void simpleButton1_Click(object sender, EventArgs e)
-            {
-                Them temp = new Them("NPP");
-                temp.ShowDialog();
+                XtraMessageBox.Show("Đã Xóa!", "Thông báo");
                 Them_Load(sender, e);
             }
+            else MessageBox.Show("Chưa chọn", "Thông báo");
 
-            private void simpleButton3_Click(object sender, EventArgs e)
+        }
+
+        private void btnXoaToanBo_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn xóa hết dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
+
+            if (LuaChon == DialogResult.Yes)
             {
-                Them temp = new Them("Kho");
-                temp.ShowDialog();
-                Them_Load(sender, e);
-            }
-
-            private void simpleButton2_Click(object sender, EventArgs e)
-            {
-                Them temp = new Them("Nhom");
-                temp.ShowDialog();
-                Them_Load(sender, e);
-            }
-
-            private void simpleButton4_Click(object sender, EventArgs e)
-            {
-                Them temp = new Them("DonVi");
-                temp.ShowDialog();
-                Them_Load(sender, e);
-            }
-
-
-            private void initPQ()
-            {
-                //lay user hien tai
-                string user = con.GetValue("select name from tblLuuMK where num='1'", 0);
-                //phan quyen
-                DataTable temp = con.GetDataTable("select * from PhanQuyen where Username like '" + user + "'");
-
-                if (temp.Rows[0][2].ToString().Trim() == "False")
+                if (stateEvent == "HangHoa")
                 {
-                    btnThem.Enabled = false;
-                }
+                    con.ThucThiCauLenhSQL("DELETE FROM tblHangHoa");
+                    XtraMessageBox.Show("Đã Xóa!", "Thông báo");
 
-                if (temp.Rows[0][4].ToString().Trim() == "False")
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (stateEvent == "DonVi")
                 {
-                    btnSua.Enabled = false;
-                }
+                    con.ThucThiCauLenhSQL("DELETE FROM tblDonVi");
+                    MessageBox.Show("Đã Xóa!", "Thông báo");
 
-                if (temp.Rows[0][5].ToString().Trim() == "False")
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (stateEvent == "KhachHang")
                 {
-                    btnXoa.Enabled = false;
-                    btnXoaToanBo.Enabled = false;
+                    con.ThucThiCauLenhSQL("DELETE FROM tblKhachHang");
+                    XtraMessageBox.Show("Đã Xóa!", "Thông báo");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (stateEvent == "NPP")
+                {
+                    con.ThucThiCauLenhSQL("DELETE FROM tblNPP");
+                    MessageBox.Show("Đã Xóa!", "Thông báo");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (stateEvent == "Nhom")
+                {
+                    con.ThucThiCauLenhSQL("DELETE FROM tblNhom");
+                    XtraMessageBox.Show("Đã Xóa!", "Thông báo");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                }
+                else if (stateEvent == "Kho")
+                {
+                    con.ThucThiCauLenhSQL("DELETE FROM tblKho");
+                    MessageBox.Show("Đã Xóa!", "Thông báo");
+
+                    DateTime currentTime = DateTime.Now;
+                    con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Xóa Toàn Bộ','" +
+                        string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
                 }
             }
-
-            private void simpleButton10_Click(object sender, EventArgs e)
+            else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
             {
-                ExportToExcel temp = new ExportToExcel();
-                temp.exportFile("*.xls", gridControlDL);
+                return;
             }
 
-            private void simpleButton5_Click(object sender, EventArgs e)
+        }
+
+        private void btnSua_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            gridView6.ResetCursor();
+            DialogResult LuaChon = XtraMessageBox.Show("Bạn chắc chắn muốn sửa dữ liệu?", "Cảnh Báo", MessageBoxButtons.YesNo);
+
+            if (LuaChon == DialogResult.Yes)
             {
-                ExportToExcel temp = new ExportToExcel();
-                temp.exportFile("*.pdf", gridControlDL);
+                if (stateEvent == "HangHoa")
+                {
+                    if (SaveChane("tblHangHoa"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Hàng Hóa',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+
+                }
+                else if (stateEvent == "DonVi")
+                {
+                    if (SaveChane("tblDonVi"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Đơn Vị',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+                }
+                else if (stateEvent == "KhachHang")
+                {
+                    if (SaveChane("tblKhachHang"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Khách Hàng',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+                }
+                else if (stateEvent == "NPP")
+                {
+                    if (SaveChane("tblNPP"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhà Phân Phối',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+                }
+                else if (stateEvent == "Nhom")
+                {
+                    if (SaveChane("tblNhom"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Nhóm',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+                }
+                else if (stateEvent == "Kho")
+                {
+                    if (SaveChane("tblKho"))
+                    {
+                        XtraMessageBox.Show("Đã sửa");
+                        btnSua.Enabled = false;
+
+                        DateTime currentTime = DateTime.Now;
+                        con.ThucThiCauLenhSQL("insert into tblNhatKi (NKTen,NKTacVu,NKNgay,NKUser) values (N'Kho',N'Cập nhật','" +
+                            string.Format("{0:yyyy/MM/dd HH:mm:ss}", currentTime) + "',N'" + lbNameUser + "')");
+                    }
+                    else MessageBox.Show("Nhập thiếu!");
+                }
+            }
+            else if (LuaChon == DialogResult.Cancel || LuaChon == DialogResult.No || LuaChon == DialogResult.None)
+            {
+                return;
             }
 
-            private void gridView6_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
-            {
+        }
 
+        private void btnCapNhat_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (stateEvent == "HangHoa")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblHangHoa");
+            }
+            else if (stateEvent == "DonVi")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblDonVi");
+            }
+            else if (stateEvent == "KhachHang")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblKhachHang");
+            }
+            else if (stateEvent == "NPP")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblNPP");
+            }
+            else if (stateEvent == "Nhom")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblNhom");
+            }
+            else if (stateEvent == "Kho")
+            {
+                gridControlDL.DataSource = con.GetDataTable("select * from tblKho");
             }
 
-            private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
-            {
+            btnSua.Enabled = true;
+        }
 
+        private bool SaveChane(string cmd)
+        {
+            gridControlDL.Refresh();
+            bool res = false;
+            SqlDataAdapter sql = con.GetCmd("select * from " + cmd);
+            try
+            {
+                DataTable temp = gridControlDL.DataSource as DataTable;
+                sql.Update(temp.GetChanges());  //luu tat ca hung thay doi
+                res = true;
             }
+            catch (Exception e)
+            {
+                XtraMessageBox.Show(e.Message);
+                res = false;
+            }
+            finally
+            {
+                con.DongKetNoiMetho();
+            }
+
+            return res;
+        }
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("NPP");
+            temp.ShowDialog();
+            Them_Load(sender, e);
+        }
+
+        private void simpleButton3_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("Kho");
+            temp.ShowDialog();
+            Them_Load(sender, e);
+        }
+
+        private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("Nhom");
+            temp.ShowDialog();
+            Them_Load(sender, e);
+        }
+
+        private void simpleButton4_Click(object sender, EventArgs e)
+        {
+            Them temp = new Them("DonVi");
+            temp.ShowDialog();
+            Them_Load(sender, e);
+        }
+
+
+        private void initPQ()
+        {
+            //lay user hien tai
+            string user = con.GetValue("select name from tblLuuMK where num='1'", 0);
+            //phan quyen
+            DataTable temp = con.GetDataTable("select * from PhanQuyen where Username like '" + user + "'");
+
+            if (temp.Rows[0][2].ToString().Trim() == "False")
+            {
+                btnThem.Enabled = false;
+            }
+
+            if (temp.Rows[0][4].ToString().Trim() == "False")
+            {
+                btnSua.Enabled = false;
+            }
+
+            if (temp.Rows[0][5].ToString().Trim() == "False")
+            {
+                btnXoa.Enabled = false;
+                btnXoaToanBo.Enabled = false;
+            }
+        }
+
+        private void simpleButton10_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.xls", gridControlDL);
+        }
+
+        private void simpleButton5_Click(object sender, EventArgs e)
+        {
+            ExportToExcel temp = new ExportToExcel();
+            temp.exportFile("*.pdf", gridControlDL);
+        }
+
+        private void gridView6_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
